@@ -45,7 +45,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch,int branchInd,
             branchInd++;
 
             int nextAtomInd= distance(atoms.begin(), find(atoms.begin(),atoms.end(),branches[branchInd][0]));
-            qDebug()<<thisAtomInd << nextAtomInd << bonds[thisAtomInd][nextAtomInd] <<"BRANCHBOND";
             smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
 
 
@@ -55,7 +54,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch,int branchInd,
             smile+=")";
         }
         int nextAtomInd= distance(atoms.begin(), find(atoms.begin(),atoms.end(),branch[i+1]));
-        qDebug()<<thisAtomInd << nextAtomInd << bonds[thisAtomInd][nextAtomInd] <<"BOND";
         if(nextAtomInd!=atoms.size())
             smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
         if( branchPoint!=branchPoints.end())
@@ -66,7 +64,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch,int branchInd,
 
 void Identificator::dfs(int atomID,std::vector<std::vector<int> > bonds ,bool newBranch, int parent){
     if (newBranch){
-        qDebug()<<"newBranch";
         std::vector<Atom*> tmpV;
         branches.push_back(tmpV);
         branchPoints.push_back(atoms[branchID]);

@@ -85,8 +85,5 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         l.setLength(line().length()-5);
         l.setAngle(angle);
         painter->drawLine(l);
-        qDebug()<<"DRAW i"<<i;
-
     }
-    qDebug()<<"drawn";
 }

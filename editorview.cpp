@@ -19,6 +19,7 @@ EditorView::EditorView(QWidget *parent) :
     connect(ui->buttonSMILE,SIGNAL(pressed()),this,SLOT(getSMILE()));
     connect(ui->comboBox,SIGNAL(currentIndexChanged(QString)),scene,SLOT(setElement(QString)));
     connect(ui->comboBox_2,SIGNAL(currentIndexChanged(int)),scene,SLOT(setBondOrder(int)));
+    connect(ui->ButtonGetInfo,SIGNAL(clicked(bool)),this,SLOT(moleculeInfo()));
 }
 
 EditorView::~EditorView()
@@ -32,4 +33,8 @@ void EditorView::getSMILE(){
     std::vector< std::vector<int> >bonds=scene->getConnectivityMatrix();
     std::string smile = ident.ind(atoms,bonds);
     ui->lineEditeSMILE->setText(QString::fromStdString(smile) );
+}
+void EditorView::moleculeInfo(){
+    QString SMILE=ui->lineEditeSMILE->text();
+    emit molInf(SMILE);
 }

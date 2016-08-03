@@ -1,11 +1,26 @@
 #ifndef API_H
 #define API_H
 
+#include"molecule.h"
 
-class API
+#include<QtNetwork>
+
+#include<QXmlStreamReader>
+
+class API:public QObject
 {
+    Q_OBJECT
 public:
-    API();
+    API(QString baseURL,QString securityToken);
+    Molecule* search(QString SMILE);
+
+private:
+    QString baseUrl;
+    QNetworkReply* post(QString url, QString key, QString data);
+    QNetworkReply* put(QString url, QString data);
+    QNetworkReply* get(QString url);
+    QNetworkAccessManager manager;
+    QString securityToken;
 };
 
 #endif // API_H

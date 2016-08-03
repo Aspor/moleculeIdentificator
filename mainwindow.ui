@@ -16,7 +16,22 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="EditorView" name="graphicsView"/>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <widget class="QWidget" name="page">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="EditorView" name="graphicsView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="MoleculeInfoView" name="moleculeInfoView" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -27,6 +42,12 @@
    <class>EditorView</class>
    <extends>QGraphicsView</extends>
    <header>editorview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MoleculeInfoView</class>
+   <extends>QWidget</extends>
+   <header location="global">moleculeinfoview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

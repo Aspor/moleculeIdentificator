@@ -20,8 +20,7 @@ void Atom::addCycle(int cycleId){
 
 std::string Atom::Atom::SMILEout(){
     std::string result=atomicSymbol;
-    //std::string cycleStr="";
-     std::ostringstream ostr;
+    std::ostringstream ostr;
     if(charge!=0){
         ostr<<charge;
         std::string chargeStr=ostr.str();

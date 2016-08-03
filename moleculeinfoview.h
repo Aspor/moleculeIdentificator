@@ -14,9 +14,15 @@ class MoleculeInfoView : public QWidget
 public:
     explicit MoleculeInfoView(QWidget *parent = 0);
     ~MoleculeInfoView();
+signals:
+    void toEditor(int);
+public slots:
+    void fillInfoTable(std::vector<std::array<std::string,2> >);
 
 private:
     Ui::MoleculeInfoView *ui;
+private slots:
+    void toEditor();
 };
 
 #endif // MOLECULEINFOVIEW_H

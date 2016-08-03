@@ -145,7 +145,6 @@ std::vector<std::vector<int> > EditorScene::getConnectivityMatrix(){
         int j=atoms.indexOf(bond->getAtoms()[1]);
         conMatrix[i][j]=bond->getBondOrder();
         conMatrix[j][i]=bond->getBondOrder();
-        qDebug()<<"Bond i j"<<i<<j;
     }
     return conMatrix;
 }
