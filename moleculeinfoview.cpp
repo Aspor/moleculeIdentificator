@@ -1,5 +1,6 @@
 #include "moleculeinfoview.h"
 #include "ui_moleculeinfoview.h"
+#include <QDebug>
 
 MoleculeInfoView::MoleculeInfoView(QWidget *parent) :
     QWidget(parent),

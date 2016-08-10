@@ -8,7 +8,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->graphicsView,SIGNAL(molInf(QString)),this,SLOT(moleculeInfo(QString)));
     connect(ui->moleculeInfoView,SIGNAL(toEditor(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+    connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->graphicsView->getScene(),SLOT(setElement(QString)));
+
+    connect(ui->graphicsView,SIGNAL(elements(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+    connect(ui->periodicTable,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+    connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->graphicsView,SLOT(setElement(QString)));
+
+
+    ui->stackedWidget->setCurrentIndex(0);
     api=new API("http://www.chemspider.com","");
+
 }
 
 MainWindow::~MainWindow()

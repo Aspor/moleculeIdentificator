@@ -16,15 +16,21 @@ class EditorView : public QWidget
 public:
     explicit EditorView(QWidget *parent = 0);
     ~EditorView();
+    EditorScene* getScene();
 
 signals:
     void molInf(QString);
+    void elements(int );
 
 public slots:
     void getSMILE();
+    void setElement(QString);
 
 private slots:
     void moleculeInfo();
+    void fromSMILE();
+    void elements();
+
 
 private:
     Ui::EditorView *ui;

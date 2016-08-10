@@ -11,7 +11,8 @@ class AtomGraphicItem: public QGraphicsTextItem, public Atom
 {
     Q_OBJECT
 public:
-    AtomGraphicItem(QPointF pos, QString symbol,int id, int charge);
+    AtomGraphicItem(QPointF pos, QString symbol,int charge, int id);
+    AtomGraphicItem(QString symbol, int charge, int id);
     ~AtomGraphicItem();
     void setElement(QString symblol);
     void setCharge(int charge);

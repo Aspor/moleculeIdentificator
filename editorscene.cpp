@@ -4,6 +4,7 @@
 
 EditorScene::EditorScene(): QGraphicsScene()
 {
+    qsrand(12344);
     atomicSymbol='C';
     bondOrder=1;
     charge=0;
@@ -85,10 +86,10 @@ void EditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
 
 
 void EditorScene::addAtom(QPointF pos){
-    AtomGraphicItem* atom=new AtomGraphicItem(pos,atomicSymbol,atomID,charge);
+    AtomGraphicItem* atom=new AtomGraphicItem(pos,atomicSymbol,charge,atomID);
     atomID++;
     if(lastAtom!=nullptr){
-        addBond(atom,lastAtom);
+        addBond(lastAtom,atom);
     }
     lastAtom=atom;
     addItem(atom);
@@ -162,51 +163,114 @@ std::vector<Atom *> EditorScene::getAtomVector(){
 
 //}
 
-//void EditorScene::drawSMILE(QString smile){
-//    QVector<QString> branches=QVector<QString>(0,"");
-//    QVector<int> branchPoints=QVector<int>();
-//    QVector<Atom*> atomVec=QVector<Atom*>();
-//    for (int i=0;i<smile.size();i++){
-//        QString atomStr;
-//        if(smile[i].isUpper()){
-//            while (smile[i+1].isLower()){
-//                atomStr.append(smile[i]);
-//                i++;
-//            }
-//            QString atomSymbol="";
-//                    atomSymbol.append(atomStr[0]);
-//            int charge=0;
-//            int j=1;
-//            if(atomStr[j].isLetter()){
-//                atomSymbol+=atomStr[j];
-//                j+=1;
-//            }
-//            if(atomStr[j].isDigit()){
-//                charge= int(atomStr[j]);
-//                j++;
-//            }
-//            switch (toascii( (atomStr[j]))) {
-//            case "=":
-//                bondOrder=2;
-//                break;
-//            case "#":
-//                bondOrder=3;
-//                break;
-//            case "$":
-//                bondOrder=4;
-//                break;
-//            case ".":
-//                bondOrder=0;
-//            default:
-//                bondOrder=1;
-//                break;
-//            }
-//            atomVec.append(new Atom(atomSymbol,charge));
-//            if(atomVec.size()>1)
-//                bonds.append(new BondGraphicsItem({atomVec[atomVec.size()-1],atomVec.last()}));
-//        }
-//    }
-//}
+void EditorScene::drawSMILE(QString smile){
+    QMap<int, AtomGraphicItem*> cyclePoints=QMap<int, AtomGraphicItem*>();
+    QVector<AtomGraphicItem*> branchPoints=QVector<AtomGraphicItem*>();
+    QVector<AtomGraphicItem*> atomVec=QVector<AtomGraphicItem*>();
+    QVector<std::array<int,2> > cycles;
+    int atomID=1;
+    AtomGraphicItem* prevAtom=nullptr;
+    while(!atoms.empty()){
+        AtomGraphicItem* toDel= atoms.last();
+        removeAtom(toDel);
+
+    }
+
+    for (int i=0;i<smile.size();i++){
+        if (smile[i]=='('){
+            branchPoints.push_back(atomVec.last());
+            i++;
+        }
+        if(smile[i]==')'){
+            prevAtom = branchPoints.takeLast();
+            i++;
+        }
+
+        switch ( int(smile[i].toLatin1())) {
+        case '=':
+            bondOrder=2;
+            i++;
+            break;
+        case '#':
+            bondOrder=3;
+            i++;
+            break;
+        case '$':
+            bondOrder=4;
+            i++;
+            break;
+        case '.':
+            bondOrder=0;
+            i++;
+            break;
+        default:
+            bondOrder=1;
+            break;
+        }
+
+        bool charged=false;
+        if(smile[i]=='['){
+            charged=true;
+            i++;
+        }
+        QString atomStr;
+
+        atomStr.append(smile[i]);
+        //i++;
+        if (smile[i+1].isLower()){
+            i++;
+            atomStr.append(smile[i]);
+        }
+        QString atomSymbol="";
+        atomSymbol.append(atomStr);
+        int charge=0;
+
+        if(charged){
+            bool negative=false;
+            if(smile[i+1]=='-'){
+                negative=true;
+                i++;
+            }
+            if(smile[i+1]=='+')
+                i++;
+
+            if(smile[i+1].isDigit()){
+                i++;
+                charge=smile[i].toLatin1()-'0';
+                if(negative)
+                    charge=-charge;
+
+                i++;
+                qDebug()<<"CHARGEDIGIT"<<charge;
+        }
+        }
+        int cycle=-1;
+        if(smile[i+1].isDigit()){
+            cycle=smile[i+1].toLatin1()-'0';
+            qDebug()<<"CYCLE";
+            i++;
+        }
+        AtomGraphicItem* atom=new AtomGraphicItem( QPointF(150,150), atomSymbol,charge,atomID);
+        addItem(atom);
+        atomVec.append(atom);
+        if(cyclePoints.find(cycle)!=cyclePoints.end()){
+            AtomGraphicItem* arr[2]={atom,cyclePoints[cycle]};
+            bonds.append(new BondGraphicsItem(arr,bondOrder));
+            addBond(atom,cyclePoints[cycle]);
+        }
+        else if(cycle!=-1){
+            cyclePoints.insert(cycle,atom);
+        }
+
+        atomID++;
+        if(atomVec.size()>1){
+            addBond(atom,prevAtom);
+        }
+        prevAtom=atom;
+    }
+    atoms=atomVec;
+    clean();
+}
 
 void EditorScene::setMyModeAdd(bool toggled){
     if(toggled)
@@ -227,3 +291,53 @@ void EditorScene::setBondOrder(int bo){
     bondOrder=bo;
 }
 
+void EditorScene::clean(){
+    foreach (AtomGraphicItem* atom,atoms) {
+        QList<QGraphicsItem*> list=atom->collidingItems();
+        for (int i=0;i<list.size();i++){
+            if(list[i]->type()==BondGraphicsItem::Type){
+                list.removeAt(i);
+                i--;
+            }
+        }
+        while(!list.empty()){
+            qreal r1=(10-qrand()%20)/10.0;
+            qreal r2=(10-qrand()%20)/10.0;
+            atom->moveBy(r1*10,r2*10);
+            list=atom->collidingItems();
+            for (int i=0;i<list.size();i++){
+                if(list[i]->type()==BondGraphicsItem::Type){
+                    list.removeAt(i);
+                    i--;
+                }
+            }
+        }
+    }
+    int counter=0;
+    foreach (BondGraphicsItem* bond,bonds) {
+        QList<QGraphicsItem*> list=bond->collidingItems();
+        for (int i=0;i<list.size();i++){
+            if(list[i]->type()==AtomGraphicItem::Type){
+                list.removeAt(i);
+                i--;
+            }
+        }
+        while(!list.empty()&&counter<250){
+            counter++;
+            qreal r1=(10-qrand()%20)/10.0;
+            qreal r2=(10-qrand()%20)/10.0;
+            qDebug()<<r1<<r2;
+            bond->getAtoms()[1]->moveBy(r1*10.0,r2*10.0);
+            r1=(20.0-qrand()%20)/10.0;
+            r2=(20.0-qrand()%20)/10.0;
+            bond->getAtoms()[0]->moveBy(r1*10.0,r2*10.0);
+            list=bond->collidingItems();
+            for (int i=0;i<list.size();i++){
+                if(list[i]->type()==AtomGraphicItem::Type){
+                    list.removeAt(i);
+                    i--;
+                }
+            }
+        }
+    }
+}

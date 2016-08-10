@@ -20,6 +20,8 @@ EditorView::EditorView(QWidget *parent) :
     connect(ui->comboBox,SIGNAL(currentIndexChanged(QString)),scene,SLOT(setElement(QString)));
     connect(ui->comboBox_2,SIGNAL(currentIndexChanged(int)),scene,SLOT(setBondOrder(int)));
     connect(ui->ButtonGetInfo,SIGNAL(clicked(bool)),this,SLOT(moleculeInfo()));
+    connect(ui->GenerateFromSMILE,SIGNAL(clicked(bool)),this,SLOT(fromSMILE()));
+    connect(ui->buttonElements,SIGNAL(clicked(bool)),this,SLOT(elements()));
 }
 
 EditorView::~EditorView()
@@ -37,4 +39,25 @@ void EditorView::getSMILE(){
 void EditorView::moleculeInfo(){
     QString SMILE=ui->lineEditeSMILE->text();
     emit molInf(SMILE);
+}
+
+void EditorView::fromSMILE(){
+    QString smile=ui->lineEditeSMILE->text();
+    scene->drawSMILE(smile);
+}
+EditorScene* EditorView::getScene(){
+    return scene;
+}
+void EditorView::elements(){
+    emit elements(2);
+}
+void EditorView::setElement(QString element){
+    //ui->comboBox->addItem(element);
+
+    ui->comboBox->setCurrentText(element);
+    if(ui->comboBox->currentText()!=element){
+        ui->comboBox->addItem(element);
+        ui->comboBox->setCurrentText(element);
+    }
+    scene->setElement(element);
 }

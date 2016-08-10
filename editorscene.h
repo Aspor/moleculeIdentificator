@@ -25,7 +25,7 @@ public slots:
     void setElement(QString element);
     void setBondOrder(int);
 
-    //void drawSMILE(QString);
+    void drawSMILE(QString);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -51,6 +51,7 @@ private:
 
     int myMode;
 
+    void clean();
 
 };
 

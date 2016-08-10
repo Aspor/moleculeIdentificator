@@ -59,11 +59,16 @@ QPainterPath BondGraphicsItem::shape() const{
     qreal i=4.0;
    // QVector<QPoint> points={(line().p1()+QPointF(s*i*5,c*i*5)),  (line().p1()-QPointF(s*i*5,c*i*5)), (line().p2()+QPointF(s*i*5,c*i*5)), (line().p2()-QPointF(s*i*5,c*i*5))};
     QPolygon pol=QPolygon();
-    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
-    pol.push_back((line().p1()-QPointF(s*i*5,c*i*5)).toPoint());
-    pol.push_back((line().p2()+QPointF(s*i*5,c*i*5)).toPoint());
-    pol.push_back((line().p2()-QPointF(s*i*5,c*i*5)).toPoint());
-    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
+//    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
+//    pol.push_back((line().p1()-QPointF(s*i*5,c*i*5)).toPoint());
+//    pol.push_back((line().p2()+QPointF(s*i*5,c*i*5)).toPoint());
+//    pol.push_back((line().p2()-QPointF(s*i*5,c*i*5)).toPoint());
+//    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
+
+    pol.push_back((line().p1()+QPointF(s*10,c*10)).toPoint());
+
+    pol.push_back((line().p2()-QPointF(s*10,c*10)).toPoint());
+
     path.addPolygon(pol);
     return path;
 }

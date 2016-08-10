@@ -3,9 +3,10 @@
 #include <QPainter>
 
 #include "QDebug"
-AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int id, int charge):
+AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int charge, int id):
     QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
 {
+    qDebug()<<atomicSymbol;
     this->charge=charge;
     this->atomicSymbol=atomicSymbol;
     this->id=id;
@@ -17,8 +18,22 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int id, int ch
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-
 }
+AtomGraphicItem::AtomGraphicItem(QString atomicSymbol, int charge ,int id):
+    QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
+{
+    this->charge=charge;
+    this->atomicSymbol=atomicSymbol;
+    this->id=id;
+    updateText();
+    setZValue(2);
+
+    setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsSelectable);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+}
+
+
 AtomGraphicItem::~AtomGraphicItem(){
     while (!bonds.empty()){
         BondGraphicsItem* bond = bonds.takeLast();
@@ -36,7 +51,9 @@ void AtomGraphicItem::setCharge(int charge){
 }
 
 void AtomGraphicItem::updateText(){
-    if(charge) setPlainText(atomicSymbol + charge);
+    QString numstr;
+    numstr.setNum(charge);
+    if(charge) setPlainText(atomicSymbol +  numstr);
     else setPlainText(atomicSymbol);
 }
 void AtomGraphicItem::addBond(BondGraphicsItem* bond){
