@@ -59,15 +59,15 @@ QPainterPath BondGraphicsItem::shape() const{
     qreal i=4.0;
    // QVector<QPoint> points={(line().p1()+QPointF(s*i*5,c*i*5)),  (line().p1()-QPointF(s*i*5,c*i*5)), (line().p2()+QPointF(s*i*5,c*i*5)), (line().p2()-QPointF(s*i*5,c*i*5))};
     QPolygon pol=QPolygon();
-//    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
-//    pol.push_back((line().p1()-QPointF(s*i*5,c*i*5)).toPoint());
-//    pol.push_back((line().p2()+QPointF(s*i*5,c*i*5)).toPoint());
-//    pol.push_back((line().p2()-QPointF(s*i*5,c*i*5)).toPoint());
-//    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
+    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
+    pol.push_back((line().p1()-QPointF(s*i*5,c*i*5)).toPoint());
+    pol.push_back((line().p2()+QPointF(s*i*5,c*i*5)).toPoint());
+    pol.push_back((line().p2()-QPointF(s*i*5,c*i*5)).toPoint());
+    pol.push_back((line().p1()+QPointF(s*i*5,c*i*5)).toPoint());
 
-    pol.push_back((line().p1()+QPointF(s*10,c*10)).toPoint());
+//    pol.push_back((line().p1()+QPointF(s*10,c*10)).toPoint());
 
-    pol.push_back((line().p2()-QPointF(s*10,c*10)).toPoint());
+//    pol.push_back((line().p2()-QPointF(s*10,c*10)).toPoint());
 
     path.addPolygon(pol);
     return path;
@@ -91,4 +91,14 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         l.setAngle(angle);
         painter->drawLine(l);
     }
+}
+bool BondGraphicsItem::hasSameAtoms(BondGraphicsItem *bond){
+    AtomGraphicItem** other=bond->getAtoms();
+    return ((other[0]==atoms[0] && other[1]==atoms[1]) || (other[1]==atoms[0] && other[0]==atoms[1]));
+}
+bool BondGraphicsItem::hasSameAtoms(AtomGraphicItem* other[2]){
+     return ((other[0]==atoms[0] && other[1]==atoms[1]) || (other[1]==atoms[0] && other[0]==atoms[1]));
+}
+bool BondGraphicsItem::hasSameAtoms(AtomGraphicItem *atom1, AtomGraphicItem *atom2){
+    return ((atom1==atoms[0] && atom2==atoms[1]) || (atom2==atoms[0] && atom1==atoms[1]));
 }

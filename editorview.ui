@@ -114,6 +114,13 @@
          </attribute>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="buttonImage">
+         <property name="text">
+          <string>IMAGE</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>

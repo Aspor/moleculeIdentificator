@@ -45,12 +45,15 @@ void EditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         if( itemAt(mouseEvent->scenePos(),QTransform() )){
             QGraphicsItem* selected=itemAt(mouseEvent->scenePos(),QTransform());
             //qDebug()<<selected->pos();
-            if(selected!=0 && selected->type()==AtomGraphicItem::Type)
-                lastAtom=dynamic_cast<AtomGraphicItem*> (selected);
+            if(selected!=0 && selected->type()==AtomGraphicItem::Type){
+                if(lastAtom!=selected)
+                    lastAtom=dynamic_cast<AtomGraphicItem*> (selected);
+                else
+                    lastAtom->setElement(atomicSymbol);
+            }
             else if(selected->type()==BondGraphicsItem::Type){
                 dynamic_cast<BondGraphicsItem*>(selected)->nextBondOrder();
                 update();
-
             }
         }
         else
@@ -62,6 +65,7 @@ void EditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         QGraphicsItem* selected=itemAt(mouseEvent->scenePos(),QTransform());
         if(selected!=nullptr && selected->type()==BondGraphicsItem::Type){
             dynamic_cast<BondGraphicsItem*>(selected)->nextBondOrder();
+            update();
         }
         else
             QGraphicsScene::mousePressEvent(mouseEvent);
@@ -138,6 +142,7 @@ QVector<AtomGraphicItem*> EditorScene::getAtoms(){
     return atoms;
 }
 std::vector<std::vector<int> > EditorScene::getConnectivityMatrix(){
+    qDebug()<<bonds.size();
     std::vector<std::vector<int> > conMatrix=std::vector<std::vector<int> >(atoms.size(), std::vector<int> (atoms.size(),0));
     foreach (BondGraphicsItem* bond, bonds){
         if(bond->getAtoms()[0]->getElement()=="H" || bond->getAtoms()[1]->getElement()=="H")
@@ -146,6 +151,7 @@ std::vector<std::vector<int> > EditorScene::getConnectivityMatrix(){
         int j=atoms.indexOf(bond->getAtoms()[1]);
         conMatrix[i][j]=bond->getBondOrder();
         conMatrix[j][i]=bond->getBondOrder();
+        qDebug()<<"BOND"<<i<<j;
     }
     return conMatrix;
 }
@@ -173,7 +179,6 @@ void EditorScene::drawSMILE(QString smile){
     while(!atoms.empty()){
         AtomGraphicItem* toDel= atoms.last();
         removeAtom(toDel);
-
     }
 
     for (int i=0;i<smile.size();i++){
@@ -242,7 +247,7 @@ void EditorScene::drawSMILE(QString smile){
 
                 i++;
                 qDebug()<<"CHARGEDIGIT"<<charge;
-        }
+            }
         }
         int cycle=-1;
         if(smile[i+1].isDigit()){
@@ -255,7 +260,7 @@ void EditorScene::drawSMILE(QString smile){
         atomVec.append(atom);
         if(cyclePoints.find(cycle)!=cyclePoints.end()){
             AtomGraphicItem* arr[2]={atom,cyclePoints[cycle]};
-            bonds.append(new BondGraphicsItem(arr,bondOrder));
+            //bonds.append(new BondGraphicsItem(arr,bondOrder));
             addBond(atom,cyclePoints[cycle]);
         }
         else if(cycle!=-1){
@@ -313,31 +318,97 @@ void EditorScene::clean(){
             }
         }
     }
-    int counter=0;
-    foreach (BondGraphicsItem* bond,bonds) {
-        QList<QGraphicsItem*> list=bond->collidingItems();
-        for (int i=0;i<list.size();i++){
-            if(list[i]->type()==AtomGraphicItem::Type){
-                list.removeAt(i);
-                i--;
-            }
-        }
-        while(!list.empty()&&counter<250){
-            counter++;
-            qreal r1=(10-qrand()%20)/10.0;
-            qreal r2=(10-qrand()%20)/10.0;
-            qDebug()<<r1<<r2;
-            bond->getAtoms()[1]->moveBy(r1*10.0,r2*10.0);
-            r1=(20.0-qrand()%20)/10.0;
-            r2=(20.0-qrand()%20)/10.0;
-            bond->getAtoms()[0]->moveBy(r1*10.0,r2*10.0);
-            list=bond->collidingItems();
-            for (int i=0;i<list.size();i++){
-                if(list[i]->type()==AtomGraphicItem::Type){
-                    list.removeAt(i);
-                    i--;
+//    int counter=0;
+//    foreach (BondGraphicsItem* bond,bonds) {
+//        QList<QGraphicsItem*> list=bond->collidingItems();
+//        for (int i=0;i<list.size();i++){
+//            if(list[i]->type()==AtomGraphicItem::Type){
+//                list.removeAt(i);
+//                i--;
+//            }
+//        }
+//        while(!list.empty()&&counter<250){
+//            counter++;
+//            qreal r1=(10-qrand()%20)/10.0;
+//            qreal r2=(10-qrand()%20)/10.0;
+//            qDebug()<<r1<<r2;
+//            bond->getAtoms()[1]->moveBy(r1*10.0,r2*10.0);
+//            r1=(20.0-qrand()%20)/10.0;
+//            r2=(20.0-qrand()%20)/10.0;
+//            bond->getAtoms()[0]->moveBy(r1*10.0,r2*10.0);
+//            list=bond->collidingItems();
+//            for (int i=0;i<list.size();i++){
+//                if(list[i]->type()==AtomGraphicItem::Type){
+//                    list.removeAt(i);
+//                    i--;
+//                }
+//            }
+//        }
+//    }
+}
+void EditorScene::removeAll(){
+    while(!atoms.empty()){
+        AtomGraphicItem* toDel= atoms.last();
+        removeAtom(toDel);
+    }
+}
+
+void EditorScene::readFromImage(){
+    removeAll();
+    std::string file =QFileDialog::getOpenFileName().toStdString();
+    bondDetector bd =bondDetector();
+    std::vector<std::array<int, 4> >newBonds;
+    int id=0;
+    AtomGraphicItem* newAtoms[2];
+    qDebug()<<"A";
+    newBonds= bd.detectEdges(file);
+    qDebug()<<"B";
+    for (int i=0;i<newBonds.size();i++){
+        qDebug()<<"i"<<i<<newBonds.size();
+        newAtoms[0]= new AtomGraphicItem(QPointF(newBonds[i][0],newBonds[i][1]),"C" ,0,id );
+        newAtoms[1]= new AtomGraphicItem(QPointF(newBonds[i][2],newBonds[i][3]),"C",0,id+1);
+        id+=2;
+        bool addedAtoms=false;
+
+        for(int j=0;j<2;j++){
+
+            if(itemAt(newAtoms[j]->pos(),QTransform())==nullptr || itemAt(newAtoms[j]->pos(),QTransform())->type()!=AtomGraphicItem::Type){
+                atoms.append(newAtoms[j]);
+                addItem(newAtoms[j]);
+                QList<QGraphicsItem*> list=newAtoms[j]->collidingItems();
+                for (int i=0;i<list.size();i++){
+                    if(list[i]->type()==BondGraphicsItem::Type){
+                        list.removeAt(i);
+                        i--;
+                    }
+                }
+                addedAtoms=true;
+                if(!list.empty()){
+                    qDebug()<<"List"<<list.size();
+                    removeAtom(newAtoms[j]);
+                    newAtoms[j]=dynamic_cast<AtomGraphicItem*> (list[0]);
                 }
             }
+            else{
+                QGraphicsItem* tmp = newAtoms[j];
+                newAtoms[j]= dynamic_cast<AtomGraphicItem*> ( itemAt(newAtoms[j]->pos(),QTransform()));
+                delete tmp;
+            }
         }
+        //if(addedAtoms){
+            //TODO check if similar bond already exist
+            bool newBond=true;
+            for(int k=0;k<bonds.size();k++){
+                if(bonds[k]->hasSameAtoms( newAtoms[0],newAtoms[1])){
+                    newBond=false;
+                    //bonds[k]->nextBondOrder();
+                    break;
+                }
+            }
+            if(newBond){
+                addBond(newAtoms[0],newAtoms[1]);
+            }
+        //}
     }
+    qDebug()<<"ATOMS Size"<<atoms.size();
 }

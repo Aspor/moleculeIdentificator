@@ -42,3 +42,11 @@ std::string Atom::Atom::SMILEout(){
 std::string Atom::getElement(){
     return atomicSymbol;
 }
+//void Atom::setElement(std::string element){
+//    atomicSymbol=element;
+//    return;
+//}
+void Atom::setElement(std::string symblol){
+    atomicSymbol=symblol;
+    return;
+}

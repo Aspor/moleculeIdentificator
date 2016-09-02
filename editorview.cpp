@@ -22,6 +22,7 @@ EditorView::EditorView(QWidget *parent) :
     connect(ui->ButtonGetInfo,SIGNAL(clicked(bool)),this,SLOT(moleculeInfo()));
     connect(ui->GenerateFromSMILE,SIGNAL(clicked(bool)),this,SLOT(fromSMILE()));
     connect(ui->buttonElements,SIGNAL(clicked(bool)),this,SLOT(elements()));
+    connect(ui->buttonImage,SIGNAL(clicked(bool)),scene,SLOT(readFromImage()));
 }
 
 EditorView::~EditorView()

@@ -19,10 +19,8 @@ PeriodicTable::~PeriodicTable()
     delete buttonTable;
 }
 QGridLayout* PeriodicTable::generatePeriodicTable(){
-
     QGridLayout* perTable=new QGridLayout();
     //perTable->setSpacing(0);
-
     const int s=2;
     const int p=6;
     const int d=10;
@@ -30,7 +28,6 @@ QGridLayout* PeriodicTable::generatePeriodicTable(){
     int period=1;
     int group=0;
     for (int i=0;i<118;i++){
-        qDebug()<<"i"<<i<<period<<group;
         perTable->addWidget(elementButton(i),period,group);
         switch (period) {
         case 1:
@@ -98,9 +95,7 @@ QGridLayout* PeriodicTable::generatePeriodicTable(){
         }
         //period++;
     }
-
     return perTable;
-
 }
 QPushButton* PeriodicTable::elementButton(int i){
 
@@ -108,7 +103,7 @@ QPushButton* PeriodicTable::elementButton(int i){
     but->resize(5,5);
     buttonTable->addButton(but,i);
     //but->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
-    but->show();
+    //but->show();
 
     return but;
 }
