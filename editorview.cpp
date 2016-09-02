@@ -22,6 +22,13 @@ EditorView::EditorView(QWidget *parent) :
     connect(ui->ButtonGetInfo,SIGNAL(clicked(bool)),this,SLOT(moleculeInfo()));
     connect(ui->GenerateFromSMILE,SIGNAL(clicked(bool)),this,SLOT(fromSMILE()));
     connect(ui->buttonElements,SIGNAL(clicked(bool)),this,SLOT(elements()));
+    connect(ui->buttonImage,SIGNAL(clicked(bool)),scene,SLOT(readFromImage()));
+
+    ui->buttonAdd->setIcon(QIcon(":/icons/plus.png"));
+    ui->buttonRemove->setIcon(QIcon(":/icons/minus.png"));
+    ui->buttonEdit->setIcon(QIcon(":/icons/moveArrow.png"));
+
+
 }
 
 EditorView::~EditorView()

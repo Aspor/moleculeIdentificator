@@ -5,6 +5,7 @@
 #include <QtCore>
 #include "atom.h"
 
+
 class BondGraphicsItem;
 
 class AtomGraphicItem: public QGraphicsTextItem, public Atom
@@ -24,6 +25,8 @@ public:
     enum { Type = UserType + 1 };
     int type() const;
 
+//    virtual QPainterPath shape() const;
+
 signals:
     void posChange();
 
@@ -32,7 +35,6 @@ protected:
 
 
 private:
-    QString atomicSymbol;
     int charge;
     int id;
     QVector<BondGraphicsItem*> bonds;

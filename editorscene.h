@@ -3,8 +3,10 @@
 
 #include <QGraphicsScene>
 #include <QtCore>
+#include <QFileDialog>
 #include "atomgraphicitem.h"
 #include "bondgraphicsitem.h"
+#include "ImageRecognition/bonddetector.h"
 
 class EditorScene: public QGraphicsScene
 {
@@ -24,8 +26,9 @@ public slots:
     void setMyModeRemove(bool toggled);
     void setElement(QString element);
     void setBondOrder(int);
-
     void drawSMILE(QString);
+
+    void readFromImage();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -45,6 +48,7 @@ private:
     int charge;
     int atomID;
 
+
     //QVector<QVector <int> >
     QVector<BondGraphicsItem*>bonds;
     QVector<AtomGraphicItem*> atoms;
@@ -52,6 +56,7 @@ private:
     int myMode;
 
     void clean();
+    void removeAll();
 
 };
 

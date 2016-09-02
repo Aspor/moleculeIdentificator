@@ -6,9 +6,9 @@
 AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int charge, int id):
     QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
 {
-    qDebug()<<atomicSymbol;
     this->charge=charge;
-    this->atomicSymbol=atomicSymbol;
+
+    this->atomicSymbol = atomicSymbol.toStdString();
     this->id=id;
     updateText();
 
@@ -23,7 +23,7 @@ AtomGraphicItem::AtomGraphicItem(QString atomicSymbol, int charge ,int id):
     QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
 {
     this->charge=charge;
-    this->atomicSymbol=atomicSymbol;
+    this->atomicSymbol= atomicSymbol.toStdString();
     this->id=id;
     updateText();
     setZValue(2);
@@ -42,7 +42,7 @@ AtomGraphicItem::~AtomGraphicItem(){
 }
 
 void AtomGraphicItem::setElement(QString symblol){
-    atomicSymbol=symblol;
+    atomicSymbol=symblol.toStdString();
     updateText();
 }
 void AtomGraphicItem::setCharge(int charge){
@@ -52,9 +52,12 @@ void AtomGraphicItem::setCharge(int charge){
 
 void AtomGraphicItem::updateText(){
     QString numstr;
+    QString atomString ="";
+    atomString=atomString.fromStdString(atomicSymbol);
+
     numstr.setNum(charge);
-    if(charge) setPlainText(atomicSymbol +  numstr);
-    else setPlainText(atomicSymbol);
+    if(charge) setPlainText(atomString +  numstr);
+    else setPlainText(atomString);
 }
 void AtomGraphicItem::addBond(BondGraphicsItem* bond){
     bonds.push_back(bond);
@@ -81,3 +84,9 @@ int AtomGraphicItem::type() const{
 QVector<BondGraphicsItem*> AtomGraphicItem::getBonds(){
     return bonds;
 }
+
+//QPainterPath AtomGraphicItem::shape() const{
+//    QPainterPath path;
+//    path.addRect(-55,-55,50,50);
+//    return path;
+//}

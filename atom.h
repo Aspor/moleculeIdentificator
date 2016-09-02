@@ -16,10 +16,12 @@ public:
     std::string SMILEout();
     std::string getElement();
 
+protected:
+    std::string atomicSymbol;
+
 
 private:
     std::vector<int> cycles;
-    std::string atomicSymbol;
     int id;
     int charge;
 
