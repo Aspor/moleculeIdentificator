@@ -35,17 +35,11 @@ std::string Atom::Atom::SMILEout(){
         result+= cycStr;
     }
     cycles.clear();
-
-
     return result;
 }
 std::string Atom::getElement(){
     return atomicSymbol;
 }
-//void Atom::setElement(std::string element){
-//    atomicSymbol=element;
-//    return;
-//}
 void Atom::setElement(std::string symblol){
     atomicSymbol=symblol;
     return;

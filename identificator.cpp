@@ -30,7 +30,7 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
     dfs(0,bonds,true,-1);
 
 
-   // canonize(branchMap.find(nullptr)->second,branchMap,branchMap.find(nullptr));
+    canonize(branchMap.find(nullptr)->second,branchMap,branchMap.find(nullptr));
 
     string SMILE=generateSMILE  ( branchMap.find(nullptr)->second ,bonds);
     return SMILE;
@@ -59,8 +59,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
             Atom* nextAtom= branchPoint->second[0];
 
             int nextAtomInd= distance(atoms.begin(), find(atoms.begin(),atoms.end(),nextAtom));
-
-
 
             smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
             smile+="(";
@@ -163,10 +161,9 @@ void Identificator::canonize(vector<Atom*> skeleton, multimap<Atom*,vector< Atom
     if(changed){
         canonize(skeleton,branchMap,branchIter);
     }
-    branchIter++;
-    //    if(branchIter!=branchMap.end()){
-    //        canonize(branchIter->second  ,branchMap, branchIter);
-    //        qDebug()<<"next" ;
-    //    }
+    ++branchIter;
+    if(branchIter!=this->branchMap.end()){
+        canonize(branchIter->second  ,branchMap, branchIter);
+    }
     this->branchMap=branchMap;
 }

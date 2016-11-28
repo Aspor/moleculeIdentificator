@@ -25,7 +25,10 @@ SOURCES += main.cpp\
     molecule.cpp \
     api.cpp \
     periodictable.cpp \
-    ImageRecognition/bonddetector.cpp
+    ImageRecognition/bonddetector.cpp \
+    ImageRecognition/blobdetector.cpp \
+    ImageRecognition/atomfinder.cpp \
+    ImageRecognition/ocr.cpp
 
 HEADERS  += mainwindow.h \
     identificator.h \
@@ -38,7 +41,10 @@ HEADERS  += mainwindow.h \
     molecule.h \
     api.h \
     periodictable.h \
-    ImageRecognition/bonddetector.h
+    ImageRecognition/bonddetector.h \
+    ImageRecognition/blobdetector.h \
+    ImageRecognition/atomfinder.h \
+    ImageRecognition/ocr.h
 
 FORMS    += mainwindow.ui \
     editorview.ui \
@@ -56,5 +62,5 @@ RESOURCES +=  icons/minus.png \
 #PRE_TARGETDEPS +=  /usr/local/lib/libopencv_ts.a
 
 #OpenCV library
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_features2d -llzma
 INCLUDEPATH += $$PWD/../../../../usr/local/include

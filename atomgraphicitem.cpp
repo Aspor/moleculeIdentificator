@@ -19,6 +19,26 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int charge, in
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
 }
+
+AtomGraphicItem::AtomGraphicItem(QPointF pos,std::string atomicSymbol,int charge, int id):
+    QGraphicsTextItem(), Atom(atomicSymbol,charge,id)
+{
+    this->charge=charge;
+
+    this->atomicSymbol = atomicSymbol;
+    this->id=id;
+    updateText();
+
+    setPos(mapToScene(pos));
+    setZValue(2);
+
+    setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsSelectable);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+}
+
+
+
 AtomGraphicItem::AtomGraphicItem(QString atomicSymbol, int charge ,int id):
     QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
 {
@@ -85,8 +105,8 @@ QVector<BondGraphicsItem*> AtomGraphicItem::getBonds(){
     return bonds;
 }
 
-//QPainterPath AtomGraphicItem::shape() const{
-//    QPainterPath path;
-//    path.addRect(-55,-55,50,50);
-//    return path;
-//}
+QPainterPath AtomGraphicItem::shape() const{
+    QPainterPath path;
+    path.addRect(-6,-6,24,24);
+    return path;
+}

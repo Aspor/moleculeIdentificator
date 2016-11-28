@@ -13,6 +13,8 @@ class AtomGraphicItem: public QGraphicsTextItem, public Atom
     Q_OBJECT
 public:
     AtomGraphicItem(QPointF pos, QString symbol,int charge, int id);
+    AtomGraphicItem(QPointF pos, std::string symbol,int charge, int id);
+
     AtomGraphicItem(QString symbol, int charge, int id);
     ~AtomGraphicItem();
     void setElement(QString symblol);
@@ -25,7 +27,7 @@ public:
     enum { Type = UserType + 1 };
     int type() const;
 
-//    virtual QPainterPath shape() const;
+    virtual QPainterPath shape() const;
 
 signals:
     void posChange();

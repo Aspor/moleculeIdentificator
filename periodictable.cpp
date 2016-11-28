@@ -102,8 +102,6 @@ QPushButton* PeriodicTable::elementButton(int i){
     QPushButton* but=new QPushButton(elements[i]);// QString().number(i));
     but->resize(5,5);
     buttonTable->addButton(but,i);
-    //but->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
-    //but->show();
 
     return but;
 }
