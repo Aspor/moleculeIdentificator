@@ -6,6 +6,9 @@
 #include <QPushButton>
 #include <QButtonGroup>
 
+/* Class for viewing and selecting elements from periodic table
+ */
+
 namespace Ui {
 class PeriodicTable;
 }
@@ -20,7 +23,6 @@ public:
 
 public slots:
     void buttonPressed(int);
-
 signals:
     void elementChosen(QString Element);
     void back(int);

@@ -17,16 +17,16 @@ QNetworkReply* API::post(QString url, QString key, QString data){
 }
 QNetworkReply* API::put(QString url, QString data){
     QByteArray array (data.toStdString().c_str());
-
     return manager.put(QNetworkRequest(QUrl(url)),array);
 }
 QNetworkReply* API::get(QString url){
     const QUrl newUrl = QUrl::fromUserInput(baseUrl+url);
-
     return manager.get(QNetworkRequest(newUrl));
 }
 
+//searh chemspider database for molecule correspondig to SMILE and get molecular information for it
 Molecule* API::search(QString SMILE){
+
     QString apiURL="/Search.asmx/SimpleSearch";
     QNetworkReply* csidReply=post(apiURL,"query", SMILE);
     QEventLoop loop;
@@ -39,7 +39,11 @@ Molecule* API::search(QString SMILE){
     reader->readNext();
     reader->readNext();
     reader->readNext();
+
+    //molecular indeficator in chemspider database
     QString molInd=reader->readElementText();
+
+
     QNetworkReply* molInfoReply = post("/MassSpecAPI.asmx/GetExtendedCompoundInfo","CSID",molInd);
     connect(molInfoReply,SIGNAL(finished()),&loop,SLOT(quit()));
     loop.exec();

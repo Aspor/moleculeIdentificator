@@ -20,15 +20,19 @@ PeriodicTable::~PeriodicTable()
 }
 QGridLayout* PeriodicTable::generatePeriodicTable(){
     QGridLayout* perTable=new QGridLayout();
-    //perTable->setSpacing(0);
+
+    //Orbital numbers
     const int s=2;
     const int p=6;
     const int d=10;
     const int f=14;
+
     int period=1;
     int group=0;
     for (int i=0;i<118;i++){
         perTable->addWidget(elementButton(i),period,group);
+
+        //Switch case for rows
         switch (period) {
         case 1:
             if(i==s-1){
@@ -56,10 +60,8 @@ QGridLayout* PeriodicTable::generatePeriodicTable(){
                 group=0;
             }
             else{
-
                 group = (i-18)%18+1;
             }
-
             break;
         case 6: case 7:
             if(i==s*period+p*(period-1)+d*(period-3)+f*(period-5) -1){
@@ -74,6 +76,8 @@ QGridLayout* PeriodicTable::generatePeriodicTable(){
                     group = i-85;
                 }
                 else if (i<71 || (i<103&&i>85) ){
+
+                    //lantanoids and actinoids are added to bottom of table
                     for(int j=0;j<f;j++){
                         perTable->addWidget(elementButton(i),period+2,j+2);
                         i++;

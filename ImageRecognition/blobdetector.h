@@ -10,7 +10,7 @@ class BlobDetector
 public:
     BlobDetector();
     std::vector<cv::KeyPoint>detectBlobs(std::string file);
-    std::vector<std::array <int,2> >getBlobPos(std::__cxx11::string file);
+    std::vector<std::array <int,2> >getBlobPos(std::string file);
 private:
     cv::SimpleBlobDetector detector;
 };

@@ -2,16 +2,17 @@
 #define API_H
 
 #include"molecule.h"
-
 #include<QtNetwork>
-
 #include<QXmlStreamReader>
+
+//Class for comminicating with chemSpider API
 
 class API:public QObject
 {
     Q_OBJECT
 public:
     API(QString baseURL,QString securityToken);
+
     Molecule* search(QString SMILE);
 
 private:

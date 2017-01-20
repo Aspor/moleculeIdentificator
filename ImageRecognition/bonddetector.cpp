@@ -16,8 +16,9 @@ std::vector<std::array<int,4> > bondDetector::detectEdges(std::string file )
 
     //  Laplacian(src,dst,5,1);
     std::vector<cv::Vec4i> lines;
-   // cv::HoughLinesP( dst, lines, 1, CV_PI/180, 15, 45, 15 );
+
     cv::HoughLinesP( dst, lines, 1, CV_PI/180, 45, 30, 5 );
+    //cv::HoughLinesP( dst, lines, 1, CV_PI/180, 35, 175, 175);
 
     std::vector<std::array<int,4> > bonds;
     qDebug()<<"lines"<<lines.size();

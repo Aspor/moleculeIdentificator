@@ -57,6 +57,8 @@ private:
     void insertAtom(AtomGraphicItem* atom);
     void mergeNearAtoms(AtomGraphicItem* atom);
     void mergeAtoms(AtomGraphicItem* atom,AtomGraphicItem* atom2);
+    bool mergeBonds(BondGraphicsItem* bond, BondGraphicsItem* bond2);
+    void mergeNearBonds(BondGraphicsItem* bond);
 
 
     //QVector<QVector <int> >

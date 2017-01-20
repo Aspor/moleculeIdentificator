@@ -14,9 +14,11 @@ Atom::Atom(){
     id=-1;
     cycles=std::vector<int>();
 }
+
 void Atom::addCycle(int cycleId){
     cycles.push_back(cycleId);
 }
+
 
 std::string Atom::Atom::SMILEout(){
     std::string result=atomicSymbol;

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+
 class Atom
 {
 public:
@@ -21,6 +22,7 @@ protected:
 
 
 private:
+    //vector of cycleId atom is part of
     std::vector<int> cycles;
     int id;
     int charge;

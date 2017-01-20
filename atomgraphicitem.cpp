@@ -74,7 +74,6 @@ void AtomGraphicItem::updateText(){
     QString numstr;
     QString atomString ="";
     atomString=atomString.fromStdString(atomicSymbol);
-
     numstr.setNum(charge);
     if(charge) setPlainText(atomString +  numstr);
     else setPlainText(atomString);
@@ -95,7 +94,6 @@ QVariant AtomGraphicItem::itemChange(GraphicsItemChange change, const QVariant &
            bond->updatePos();
        }
     }
-
     return value;
 }
 int AtomGraphicItem::type() const{

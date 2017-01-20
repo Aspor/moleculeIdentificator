@@ -12,7 +12,6 @@ Identificator::Identificator()
 {
     atoms=vector<Atom*>();
     branchMap = multimap<Atom*,vector<Atom*> > ();
-
     visitedAtoms=vector<bool>();
     cyclePoints=vector<std::array< int,2> >();
     cycleID=0;
@@ -25,11 +24,7 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
     visitedAtoms.resize(atoms.size(),false);
     cycleID=0;
 
-    //number of branches from first atom?
-    //branches.resize(firstBranch-1);
     dfs(0,bonds,true,-1);
-
-
     canonize(branchMap.find(nullptr)->second,branchMap,branchMap.find(nullptr));
 
     string SMILE=generateSMILE  ( branchMap.find(nullptr)->second ,bonds);
@@ -40,16 +35,20 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
 //todo canonize
 //TODO cycle bondOrder
 std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int> >bonds){
+
     const string bondSymbols[]={"","","=","#","$"};
     qDebug()<<"branch"<<branch.size();
     string smile="";
+
     for (int i=0;i<branch.size();i++){
         smile+=branch[i]->SMILEout();
         while(cycleMap.count(branch[i]) !=0){
             multimap<Atom*,int>::iterator cyc=cycleMap.find(branch[i]);
 
             smile+=bondSymbols[cycleBonds.find(cyc->second)->second];
-            smile+='0'+ cyc->second;
+
+            //cycle number as character
+            smile+='0'+ cyc->second;            
             cycleMap.erase(cyc);
         }
 
@@ -70,7 +69,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
         int nextAtomInd= distance(atoms.begin(), find(atoms.begin(),atoms.end(),branch[i+1]));
         if(nextAtomInd!=atoms.size())
             smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
-
     }
 
     return smile;
@@ -98,38 +96,69 @@ void Identificator::dfs(int atomID,std::vector<std::vector<int> > bonds ,bool ne
 
     bool tmp=false;
     for (int i=0; i<bonds.size(); i++){
+
+        //If there exixts a bond
         if(bonds[atomID][i] !=0){
+
+            //If atom hasn't been visited before
             if(!visitedAtoms[i]){
-                if(parent==-1 && tmp){
-                    branch=true;
-                }
+
+//                //If there are more than one bond from first atom
+//                if(parent==-1 && tmp){
+//                    branch=true;
+//                }
+
                 dfs(i,bonds,branch,atomID);
-                //if(tmp){
+                //If there are more than one bond from atom there a branch
                 branch=true;
-                //}
             }
+
+            //If we have visited atom before there a cycle
             else if(parent!=i){
                 //int cycleP[2]={atomID,i};
-                bool newCycle=true;
-                multimap<Atom*,int>::iterator iterI = cycleMap.find(atoms[atomID]);
-                multimap<Atom*, int>::iterator iterP = cycleMap.find(atoms[i]);
-                if( iterI!=cycleMap.end() &&  iterI->second==iterP->second){
-                    newCycle=false;
+
+
+                int countA= cycleMap.count(atoms[atomID]);
+                int countI =cycleMap.count(atoms[i]);
+                std::pair <std::multimap<Atom*,int>::iterator, std::multimap<Atom*,int>::iterator>
+                        rangeA=cycleMap.equal_range(atoms[atomID]);
+
+                std::pair <std::multimap<Atom*,int>::iterator, std::multimap<Atom*,int>::iterator>
+                        rangeI=cycleMap.equal_range(atoms[i]);
+                bool cycleExits=false;
+
+                for(std::multimap<Atom*,int>::iterator j=rangeA.first;j!=rangeA.second;++j){
+                    for(std::multimap<Atom*,int>::iterator k=rangeI.first;k!=rangeI.second;++k){
+                        if(j->second==k->second){
+                            cycleExits=true;
+                            break;
+                        }
+                    }
+                    if(cycleExits)
+                        break;
                 }
-                else{
+                if(!cycleExits){
                     qDebug()<<"newCyc";
                     cycleMap.emplace(atoms[atomID],cycleID);
                     cycleMap.emplace(atoms[i],cycleID);
                     cycleBonds.emplace(cycleID,bonds[atomID][i]);
                     cycleID++;
                 }
+
+//                //if there isn't a cycle with same atoms
+//                //Tamahan ei muuten toimi
+//                if(!(countA==countI==1 &&  iterI->second==iterP->second)){
+//                    qDebug()<<"newCyc";
+//                    cycleMap.emplace(atoms[atomID],cycleID);
+//                    cycleMap.emplace(atoms[i],cycleID);
+//                    cycleBonds.emplace(cycleID,bonds[atomID][i]);
+//                    cycleID++;
+//                }
             }
             tmp=true;
         }
     }
-
     //branchInd--;
-
     //Change to previous branch?
     branchInd=tmpBranchInd;
     return;
@@ -161,7 +190,7 @@ void Identificator::canonize(vector<Atom*> skeleton, multimap<Atom*,vector< Atom
     if(changed){
         canonize(skeleton,branchMap,branchIter);
     }
-    ++branchIter;
+    branchIter++;
     if(branchIter!=this->branchMap.end()){
         canonize(branchIter->second  ,branchMap, branchIter);
     }
