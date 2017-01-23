@@ -379,8 +379,8 @@ void EditorScene::removeAll(){
 void EditorScene::readFromImage(){
     //clear scene
     removeAll();
-    std::string file =QFileDialog::getOpenFileName().toStdString();
 
+    std::string file =QFileDialog::getOpenFileName().toStdString();
     bondDetector bd =bondDetector();
 
     //bonds start and end positions
@@ -391,7 +391,6 @@ void EditorScene::readFromImage(){
     newBonds= bd.detectEdges(file);
 
     for (int i=0;i<newBonds.size();i++){
-        qDebug()<<"i"<<i<<newBonds.size();
         newAtoms[0]= new AtomGraphicItem(QPointF(newBonds[i][0],newBonds[i][1]),std::string("C") ,0,id );
         newAtoms[1]= new AtomGraphicItem(QPointF(newBonds[i][2],newBonds[i][3]),std::string("C"),0,id+1);
         id+=2;
@@ -434,7 +433,7 @@ void EditorScene::readFromImage(){
         for(int k=0;k<bonds.size();k++){
             if(bonds[k]->hasSameAtoms( newAtoms[0],newAtoms[1])){
                 newBond=false;
-                //bonds[k]->nextBondOrder();
+               // bonds[k]->nextBondOrder();
                 break;
             }
         }
@@ -499,7 +498,6 @@ void EditorScene::mergeNearAtoms(AtomGraphicItem *atom){
                 return;
             }
         }
-
     }
     return;
 }
@@ -513,9 +511,6 @@ void EditorScene::mergeAtoms(AtomGraphicItem* a,AtomGraphicItem* a2 ){
             atom=a2;
             atom2=a;
         }
-
-
-
     //move atom to point between atom1 and atom2
     atom->moveBy( (atom2->x()-atom->x())/2,(atom2->y()-atom->y())/2 );
 
@@ -539,6 +534,8 @@ void EditorScene::mergeAtoms(AtomGraphicItem* a,AtomGraphicItem* a2 ){
     return;
 }
 
+
+//TODO FIXME
 void EditorScene::mergeNearBonds(BondGraphicsItem *bond){
     QList<QGraphicsItem*> collidingItems = bond->collidingItems();
     qDebug()<<"col"<<collidingItems.size();

@@ -87,6 +87,7 @@ void AtomGraphicItem::removeBond(BondGraphicsItem* bond){
         bonds.remove(ind);
 }
 
+//When atom is moved bonds are also updated
 QVariant AtomGraphicItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemPositionChange) {

@@ -5,6 +5,9 @@
 
 using namespace cv;
 
+//Compare position of two rectangles so elements
+//are read from left to right and top to bottom.
+
 bool compPos(vector<Point> a,vector<Point> b  ){
     qDebug()<<"compPOS";
     Rect A = boundingRect(a);
@@ -19,8 +22,6 @@ bool compPos(vector<Point> a,vector<Point> b  ){
         return A.y<B.y;
 }
 
-
-
 OCR::OCR()
 {
     loadCharacters();
@@ -28,25 +29,26 @@ OCR::OCR()
 
 std::string OCR::ocr(Mat atom){
 
+    //Split elements to single characters
     vector<Mat> chars = split(atom);
     std::string atomstr="";
+
+    //Regocnice characters and append them to atom string
     for(int i=0;i<chars.size();i++){
         //qDebug()<<"CharChar"<<i;
         atomstr+= character(chars[i]);
     }
+
+    //Remove spaces from string
     atomstr.erase(remove_if(atomstr.begin(), atomstr.end(), isspace), atomstr.end());
 
-
-    qDebug()<<"atomSTR"<<QString::fromStdString( atomstr);
     if(atomstr.length()==0)
         return "C";
     return atomstr;
-
 }
 
 vector<Mat> OCR::split(Mat atom){
     vector<Mat> atoms;
-
     Mat img;
     cvtColor( atom, img, COLOR_BGR2GRAY );
     bitwise_not(img,img);
@@ -69,50 +71,16 @@ vector<Mat> OCR::split(Mat atom){
             qDebug()<<rect.area();
             atoms.push_back(mat);
         }
-        //std::sort(atoms.begin(),atoms.end(), compPos );
     }
     return atoms;
 }
-//    for(int y=0;y<atom.rows;y++){
-//        int* row = (int*) atom.ptr(y);
-//        for(int x=0;x<atom.cols;x++){
-//            if(row[x]!=0)
-//                continue;
 
-//            Rect rect;
-//            Mat blob=Mat::zeros(atom.size(),CV_8UC3);
-//            floodFill(atom,Point(x,y),1,&rect,0,0,8) ;
-
-
-//            for (int i =rect.y;i<rect.y+rect.height;i++){
-//                int* row2=(int*) atom.ptr(i);
-//                for (int j =rect.x;j<rect.x+rect.width;j++){
-////                    if(row2[j]=1)
-////                        continue;
-
-//                    blob.ptr(i)[j]=row2[j];
-//                }
-//            }
-////            x=rect.x+rect.width;
-////            y=rect.y+rect.height;
-////            row = (int*) atom.ptr(y);
-
-
-
-
-//            if(sum(blob)[0]>5)
-//                countours.push_back(blob);
-//        }
-//    }
-//    qDebug()<<"splited"<<countours.size();
-//    return countours;
-//}
 char OCR::character(Mat c){
     int s=  sum(c)[0];
     qsrand(std::time(0) );
-    fileNum=rand();
+   // fileNum=rand();
     //std::string fileName=std::to_string(fileNum);
-    fileNum++;
+   // fileNum++;
     if(s>1000){
         Mat o;
         resize(c,o,Size(12,10));
@@ -120,7 +88,6 @@ char OCR::character(Mat c){
         int shortest=-1;
         cvtColor(o,o,COLOR_BGR2GRAY);
         for(int i=0;i<characters.size();i++){
-
             int dist=sum(o!=characters[i])[0];
             //qDebug()<<dist<<shortest<<"dist";
             if(dist<shortest ||  shortest==-1){
@@ -131,22 +98,9 @@ char OCR::character(Mat c){
         if(shortest<15000)
             return nearest;
         return ' ';
-
-   /*//    imwrite(fileName+".tif",c);
-       Mat o;
-        //return 'A';
-        std::vector<double>bytes=std::vector<double>(120);
-        resize(c,o,Size(12,10) );
-        for(int i=0;i<120;i++){
-            bytes[i]=o.data[i]/255.0;
-        }
-        return som->regognizeChar( bytes );
-        //uchar* bits=o.data;
-        return 'O';
-        */
     }
     else
-        return 'A';
+        return ' ';
 }
 
 void OCR::loadCharacters(){

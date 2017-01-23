@@ -7,17 +7,15 @@ using namespace cv;
 atomFinder::atomFinder()
 {
     ocr=new OCR();
-
 }
 
 std::vector<AtomGraphicItem *> atomFinder::labelAtoms(std::string file, std::vector<std::string> atomsSymbols){
+
     Mat src = imread(file,IMREAD_COLOR );
     findBlobs( src);
     qDebug()<<"countours.size"<<countours.size()<<atoms.size();
     matchAtomPos( );
     qDebug()<<"countours.size"<<countours.size();
-
-
     for(int i=0;i<countours.size();i++){
         std::string label = labelBlob(countours[i],src);
         //if(label.compare(" ")){
@@ -41,10 +39,13 @@ void atomFinder::findBlobs(Mat src){
 
 }
 
+//Try to find elements from list of countours
 void atomFinder::matchAtomPos(){
 
     double avrgArea=0;
     int numOfCountours=countours.size();
+
+    //Calculate avarange area of countours.
     for (int i=0; i<numOfCountours;i++){
         qDebug()<<boundingRect(countours[i]).area()<<"AREA";
         avrgArea+=boundingRect(countours[i]).area()/numOfCountours;
@@ -52,6 +53,8 @@ void atomFinder::matchAtomPos(){
     qDebug()<<avrgArea<<"avrgArea";
 
 
+    //Remove countours that are larger than avarange or not square enought
+    //Skeleton is among countours and it should be removed.
     for (int i=0; i<countours.size();i++){
         Rect rect=boundingRect(countours[i]);
         double area=rect.area();
@@ -60,7 +63,8 @@ void atomFinder::matchAtomPos(){
             i--;
         }
     }
-    //    for (int i=0; i<countours.size()-1;i++){
+
+    //Combine countours that are near each other
     for (int i=0; i<countours.size()-1;i++){
         Rect rect1=boundingRect(countours[i]);
         bool comb=false;
@@ -69,7 +73,6 @@ void atomFinder::matchAtomPos(){
             //int dist=norm(rect1.tl-rect2.tl);
             int xDist=abs( rect1.x-rect2.x)-5;
             int yDist=abs(rect1.y-rect2.y)-5;
-
             if((xDist<rect1.width || xDist<rect2.width) && (yDist<rect1.height||yDist<rect2.height)){
             //if((norm(rect1.tl()-rect2.tl()) < rect1.width+rect2.width-15 ) || (norm( rect1.tl()-rect2.tl()) < rect1.height+rect2.height-15 )){
                 vector<Point> count;
@@ -77,7 +80,6 @@ void atomFinder::matchAtomPos(){
              //if(count.size()<countours[i].size()+countours[j].size()){
                 qDebug()<< countours[i].size()<<countours[j].size() <<count.size()<<"count"<<i<<j;
                 comb=true;
-
                 countours[i]=count;
                 rect1=boundingRect(countours[i]);
                 countours.erase(countours.begin()+j);
@@ -89,37 +91,13 @@ void atomFinder::matchAtomPos(){
 //        if(comb)
 //            i--;
     }
-    qDebug()<<"COMB countours size"<<countours.size();
 }
 
-
-
-
-
+//Optical character regognition
 std::string atomFinder::labelBlob(cv::vector<Point> points,Mat src){
-    //TODO OCR;
     Rect bound = boundingRect(points);
     Mat mat(src,bound);
-    //mat = Mat::zeros(bound.size(),CV_8UC1);
-
-
-
-//    int x0=bound.x;
-//    int y0=bound.y;
-//    for(int i=0;i<points.size();i++){
-//        //mat.at<bool>(   points[i].y -y0 , points[i].x -x0 )=1;
-//        mat.ptr( points[i].y -y0 )[ points[i].x -x0]=255 ;
-
-//       // mat.at<int>(  points[i].y -y0, points[i].x -x0)=INTMAX_MAX ;
-//    }
-
-
-    int s=  sum(mat)[0];
-    std::stringstream ss;
-    ss << s;
-
     return ocr->ocr(mat);
-    return "D";
 }
 
 

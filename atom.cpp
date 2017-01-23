@@ -36,6 +36,7 @@ std::string Atom::Atom::SMILEout(){
             cycStr="%"+cycStr;
         result+= cycStr;
     }
+    //Information of cycles is created ecach time SMILE is generated so vector should be cleared
     cycles.clear();
     return result;
 }

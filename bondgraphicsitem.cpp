@@ -57,8 +57,8 @@ QPainterPath BondGraphicsItem::shape() const{
     qreal c=cos(angle*3.14/180.0);
     qreal s=sin(angle*3.14/180.0);
     qreal i=4.0;
-    qreal padding=5;
-   // QVector<QPoint> points={(line().p1()+QPointF(s*i*5,c*i*5)),  (line().p1()-QPointF(s*i*5,c*i*5)), (line().p2()+QPointF(s*i*5,c*i*5)), (line().p2()-QPointF(s*i*5,c*i*5))};
+    qreal padding=2.5;
+
     QPolygon pol=QPolygon();
     pol.push_back((line().p1()+QPointF(s*i*padding,c*i*padding)).toPoint());
     pol.push_back((line().p1()-QPointF(s*i*padding,c*i*padding)).toPoint());
@@ -83,14 +83,45 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     qreal angle=line().angle();
     qreal c=cos(angle*3.14/180.0);
     qreal s=sin(angle*3.14/180.0);
+    QLineF l= QLineF();
 
-    for(int i=0;i<bondOrder;i++){
-        //QLineF l=QLineF (line().p1()+QPointF(3*i,3*i),line().p2()+QPointF(3*i,3*i));
-        QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-        l.setP1(line().p1()+QPointF(s*i*5,c*i*5));
+    switch (bondOrder) {
+    case 1:
+        // ::fromPolar(line().length(),angle);
+        l.setP1(line().p1());
         l.setLength(line().length()-5);
         l.setAngle(angle);
         painter->drawLine(l);
+        break;
+    case 2:
+        for(int i=0;i<4;i+=2){
+           // QLineF l= QLineF();// ::fromPolar(line().length(),angle);
+            l.setP1(line().p1()+QPointF( (1-i)*s*1, (1-i)* c*1));
+            l.setLength(line().length()-5);
+            l.setAngle(angle);
+            painter->drawLine(l);
+        }
+        break;
+    case 3:
+        for(int i=0;i<3;i++){
+           // QLineF l= QLineF();// ::fromPolar(line().length(),angle);
+            l.setP1(line().p1()+QPointF( (1-i)*s*2, (1-i)*c*2));
+            l.setLength(line().length()-5);
+            l.setAngle(angle);
+            painter->drawLine(l);
+        }
+        break;
+    case 4:
+        for(int i=0;i<8;i+=2){
+          //  QLineF l= QLineF();// ::fromPolar(line().length(),angle);
+            l.setP1(line().p1()+QPointF( (3-i)*s*1, (3-i)*c*1));
+            l.setLength(line().length()-5);
+            l.setAngle(angle);
+            painter->drawLine(l);
+        }
+        break;
+    default:
+        break;
     }
 }
 bool BondGraphicsItem::hasSameAtoms(BondGraphicsItem *bond){
