@@ -17,6 +17,8 @@ public:
     std::string SMILEout();
     std::string getElement();
 
+    int getId();
+
 protected:
     std::string atomicSymbol;
 

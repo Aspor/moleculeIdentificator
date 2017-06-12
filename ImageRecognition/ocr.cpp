@@ -114,7 +114,6 @@ void OCR::loadCharacters(){
     characters.push_back( imread("../moleculeIdentificator/ocrData/M1681692777.tif" ,IMREAD_GRAYSCALE));
 
     elements={'C','F','H','N','O','S','e','M'};
-
 }
 
 

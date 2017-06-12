@@ -55,10 +55,11 @@ private:
     int atomID;
 
     void insertAtom(AtomGraphicItem* atom);
-    void mergeNearAtoms(AtomGraphicItem* atom);
-    void mergeAtoms(AtomGraphicItem* atom,AtomGraphicItem* atom2);
+    bool mergeNearAtoms(AtomGraphicItem* atom,int dist =20);
+    void mergeAtoms(AtomGraphicItem* atom, AtomGraphicItem* atom2, bool ord=false);
     bool mergeBonds(BondGraphicsItem* bond, BondGraphicsItem* bond2);
     void mergeNearBonds(BondGraphicsItem* bond);
+    void mergeNearBonds();
 
 
     //QVector<QVector <int> >
@@ -69,6 +70,13 @@ private:
 
     void clean();
     void removeAll();
+    void combBonds();
+
+    QPointF* intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b2);
+
+    std::vector<std::array<int, 4> > mergeLines(std::vector<std::array<int, 4> > );
+    QVector<BondGraphicsItem*> mergeLines(QVector<BondGraphicsItem*>);
+    void mergeLines(BondGraphicsItem* bond);
 
 };
 

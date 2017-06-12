@@ -47,3 +47,7 @@ void Atom::setElement(std::string symblol){
     atomicSymbol=symblol;
     return;
 }
+
+int Atom::getId(){
+    return id;
+}
