@@ -33,6 +33,7 @@ void EditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent){
             }
         }
     }
+    else QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
 
@@ -733,8 +734,10 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
                 {
                     if(l_i.length()>l_j.length()){
                         qreal dl=l_j.length()*cos(l_i.angleTo(l_j));
-                     //   l_i.setLength(l_i.length()+dl);
-                     //   lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
+                        l_i.setLength(l_i.length()+dl);
+                        l_i.setAngle(l_i.angle()/2+l_j.angle()/2);
+                       // lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
+                        bonds[i]->setLine(l_i);
 
                         qDebug()<<"J";
                         removeBond(bonds[j]);
@@ -743,8 +746,13 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
                         j--;
                     }
                     else{
-                     //   l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
+                        qreal dl=l_i.length()*cos(l_j.angleTo(l_i));
+                        l_j.setLength(l_j.length()+dl);
+                        l_j.setAngle(l_i.angle()/2+l_j.angle()/2);
+
+                      //  l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
                      //   lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
+                        bonds[j]->setLine(l_j);
                         qDebug()<<"I";
 
                         removeBond(bonds[i]);
@@ -779,10 +787,10 @@ void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
             {
                 if(l_i.length()>l_j.length()){
                     qreal dl=l_j.length()*cos(l_i.angleTo(l_j));
-                 //   l_i.setLength(l_i.length()+dl);
-                 //   lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
+                    l_i.setLength(l_i.length()+dl);
+                    l_i.setAngle(l_i.angle()/2.0 + l_j.angle()/2.0  );
+                    //lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
                     qDebug()<<"REMOVE BOND J";
-
 
                     tmp=bonds[j];
                    // bonds.erase(bonds.begin()+j );
@@ -791,8 +799,10 @@ void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
                     j--;
                 }
                 else{
-                 //   l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
-                 //   lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
+                    l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
+                    l_j.setAngle(l_i.angle()/2.0 + l_j.angle()/2.0  );
+
+                    //lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
                     qDebug()<<"REMOVE BOND BOND";
                     removeBond(bond);
                     return;
