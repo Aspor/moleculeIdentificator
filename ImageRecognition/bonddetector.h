@@ -14,7 +14,7 @@ class bondDetector
 public:
     bondDetector();
 
-    std::vector<std::array<int,4> > detectEdges(std::string);
+    std::vector<std::array<int,4> > detectEdges(cv::Mat);
 };
 
 

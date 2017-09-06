@@ -9,8 +9,8 @@ class BlobDetector
 {
 public:
     BlobDetector();
-    std::vector<cv::KeyPoint>detectBlobs(std::string file);
-    std::vector<std::array <int,2> >getBlobPos(std::string file);
+    std::vector<cv::KeyPoint>detectBlobs(cv::Mat src);
+    std::vector<std::array <int,2> >getBlobPos(cv::Mat src);
 private:
     cv::SimpleBlobDetector detector;
 };

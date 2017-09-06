@@ -49,7 +49,7 @@ std::string OCR::ocr(Mat atom){
 
 vector<Mat> OCR::split(Mat atom){
     vector<Mat> atoms;
-    Mat img;
+    Mat img=atom;
     cvtColor( atom, img, COLOR_BGR2GRAY );
     bitwise_not(img,img);
     blur(img,img,Size(2,2));

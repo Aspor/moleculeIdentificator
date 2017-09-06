@@ -9,6 +9,7 @@
 #include "ImageRecognition/bonddetector.h"
 #include "ImageRecognition/blobdetector.h"
 #include "ImageRecognition/atomfinder.h"
+#include "ImageRecognition/moleculegrabber.h"
 
 class EditorScene: public QGraphicsScene
 {

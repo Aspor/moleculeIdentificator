@@ -18,11 +18,11 @@ BlobDetector::BlobDetector()
     detector = SimpleBlobDetector (params);
 }
 
-vector<KeyPoint> BlobDetector::detectBlobs(std::string file){
+vector<KeyPoint> BlobDetector::detectBlobs(cv::Mat src){
 
-    Mat src, im;
+    Mat im;
     vector<KeyPoint> keyPoints;
-    src=imread(file);
+  //  src=imread(file);
    // GaussianBlur(src, im, Size(15,15),7,7);
     GaussianBlur( src, im, Size(5, 5), 17, 17 );
 
@@ -30,8 +30,8 @@ vector<KeyPoint> BlobDetector::detectBlobs(std::string file){
     return keyPoints;
 }
 
-std::vector<std::array < int,2 > > BlobDetector::getBlobPos(std::string file){
-    vector<KeyPoint> KeyPoints=detectBlobs(file);
+std::vector<std::array < int,2 > > BlobDetector::getBlobPos(Mat src){
+    vector<KeyPoint> KeyPoints=detectBlobs(src);
     std::vector<std::array< int,2 > > positions;
     for (int i=0;i<KeyPoints.size();i++) {
         KeyPoint point = KeyPoints[i];

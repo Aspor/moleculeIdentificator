@@ -9,9 +9,9 @@ atomFinder::atomFinder()
     ocr=new OCR();
 }
 
-std::vector<AtomGraphicItem *> atomFinder::labelAtoms(std::string file, std::vector<std::string> atomsSymbols){
+std::vector<AtomGraphicItem *> atomFinder::labelAtoms(cv::Mat src, std::vector<std::string> atomsSymbols){
 
-    Mat src = imread(file,IMREAD_COLOR );
+    //Mat src = imread(file,IMREAD_COLOR );
     findBlobs( src);
     qDebug()<<"countours.size"<<countours.size()<<atoms.size();
     matchAtomPos( );

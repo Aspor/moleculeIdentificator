@@ -418,6 +418,8 @@ void EditorScene::readFromImage(){
     removeAll();
 
     std::string file =QFileDialog::getOpenFileName().toStdString();
+    MoleculeGrabber molGrab=MoleculeGrabber();
+    cv::Mat molImg=molGrab.grabMolecule(file);
     bondDetector bd =bondDetector();
 
     //bonds start and end positions
@@ -426,7 +428,7 @@ void EditorScene::readFromImage(){
     //atoms at bonds start and end
     AtomGraphicItem* newAtoms[2];
 
-    newBonds= bd.detectEdges(file);
+    newBonds= bd.detectEdges(molImg);
   //  newBonds=mergeLines(newBonds);
     for (int i=0;i<newBonds.size();i++){
         newAtoms[0]= new AtomGraphicItem(QPointF(newBonds[i][0],newBonds[i][1]),std::string("C") ,0,id );
@@ -488,7 +490,7 @@ void EditorScene::readFromImage(){
     atomFinder atomFind;
     std::vector<AtomGraphicItem* > atomicSymbols;
     //Try to find atomic symbols from image
-    atomicSymbols = atomFind.labelAtoms(file,std::vector<std::string>());
+    atomicSymbols = atomFind.labelAtoms(molImg,std::vector<std::string>());
 
     //Insert new atoms to position corresponding image
     for(int i=0;i<atomicSymbols.size();i++){
@@ -499,6 +501,34 @@ void EditorScene::readFromImage(){
    mergeNearBonds();
    combBonds();
    mergeNearBonds();
+
+for(int j=0;j<atoms.size();j++){
+    atoms[j]->moveBy(0.1,0.1);
+}
+//todo move to own function
+
+   for(int j=0;j<atoms.size();j++){
+       AtomGraphicItem* atom=atoms[j];
+       qreal dist = 5;
+       QList<QGraphicsItem*> nearItems = items(atom->x()-dist,atom->y()-dist,atom->boundingRect().width()+dist*2,atom->boundingRect().height()+dist*2,
+                                               Qt::IntersectsItemShape, Qt::AscendingOrder	 ,QTransform());
+       for (int i=0;i<nearItems.size();i++){
+
+           if(nearItems[i]->type()==BondGraphicsItem::Type){
+               BondGraphicsItem* nearBond=dynamic_cast<BondGraphicsItem*>(nearItems[i]);
+               AtomGraphicItem** bondAtoms = nearBond->getAtoms();
+               if((bondAtoms[0]!=atom) &&(bondAtoms[1]!=atom )){
+                   qDebug()<<"Removed atom near bond";
+                   // nearBond->nextBondOrder();
+                   removeAtom(atom);
+                   j--;
+                   break;
+               }
+
+           }
+       }
+   }
+
 }
 
 AtomGraphicItem* EditorScene::atomAt(QPointF pos){
@@ -517,12 +547,12 @@ bool EditorScene::mergeNearAtoms(AtomGraphicItem *atom,int dist){
     QList<QGraphicsItem*> nearItems = items(atom->x()-dist,atom->y()-dist,atom->boundingRect().width()+dist*2,atom->boundingRect().height()+dist*2,
                                             Qt::IntersectsItemShape, Qt::AscendingOrder	 ,QTransform());
     for (int i=0;i<nearItems.size();i++){
-        //if item isn't atom nothing is done
+        //if item isn't atom
         if(nearItems[i]->type()!=AtomGraphicItem::Type)
             continue;
 
         //if item is different from current atom
-        if(nearItems[i]!=atom){
+        else if(nearItems[i]!=atom){
             merged=true;
             AtomGraphicItem* nearAtom=dynamic_cast<AtomGraphicItem*> (nearItems[i]);
 
@@ -718,7 +748,7 @@ std::vector<std::array<int, 4> > EditorScene::mergeLines(std::vector<std::array<
         }
     }
 
-    qDebug()<<"MERGED";
+    qDebug()<<"MERGED lines";
     return lines;
 }
 
@@ -769,7 +799,7 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
             }
         }
     }
-    qDebug()<<"MERGED";
+    qDebug()<<"MERGED bonds";
     return bonds;
 }
 void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
@@ -795,7 +825,6 @@ void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
                     tmp=bonds[j];
                    // bonds.erase(bonds.begin()+j );
                     removeBond(tmp);
-
                     j--;
                 }
                 else{
