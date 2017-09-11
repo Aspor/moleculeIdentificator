@@ -20,19 +20,20 @@ std::vector<std::array<int,4> > bondDetector::detectEdges(cv::Mat src )
 //    cv::blur(src,src,cv::Size(5,5));
 //    cv::blur(src,src,cv::Size(5,5));
  //   cv::boxFilter(src,src,-1,cv::Size(4,4));
+    cv::blur(im,dst,cv::Size(10,10));
 
-    cv::bilateralFilter(im,dst, 50,75,5);
+   // cv::bilateralFilter(im,dst, 50,75,55);
 
-    cv::adaptiveThreshold(dst,dst, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C ,0  , 125, 0);
+    cv::adaptiveThreshold(dst,dst, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C ,1  , 125, 0);
 
-    cv::bitwise_not(dst,dst);
-    //cv::HoughLinesP( dst, lines, 1, CV_PI/90,35,25, 25);
+    cv::Mat kernel =cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3));
+    cv::dilate(dst,dst,kernel);
 
-    cv::HoughLinesP( dst, lines, 1, CV_PI/90,45,5, 10);
+  //  cv::namedWindow( "image", cv::WINDOW_AUTOSIZE );
+  //  cv::imshow( "image", dst );
 
-
-    //THIS
-    //cv::HoughLinesP( dst, lines, 1, CV_PI/90, 65,50, 3);
+  //  cv::waitKey(0);
+    cv::HoughLinesP( dst, lines, 1, CV_PI/90,5,25, 5);
 
     std::vector<std::array<int,4> > bonds;
     for( size_t i = 0; i < lines.size(); i++ )

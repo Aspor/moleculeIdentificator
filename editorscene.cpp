@@ -183,7 +183,11 @@ bool compareAtoms(AtomGraphicItem* a1, AtomGraphicItem* a2){
 std::vector<std::vector<int> > EditorScene::getConnectivityMatrix(){
 
     //Sort atoms by number of bonds so first atom in SMILE shourd have only one bond
-    // std::sort(atoms.begin(),atoms.end(), compareAtoms );
+     std::sort(atoms.begin(),atoms.end(), compareAtoms );
+    // std::reverse(atoms.begin(),atoms.end() );
+     while(atoms.first()->getBonds().size()==0){
+           removeAtom(atoms.first());
+    }
 
     std::vector<std::vector<int> > conMatrix=std::vector<std::vector<int> >(atoms.size(), std::vector<int> (atoms.size(),0));
 
@@ -222,15 +226,17 @@ void EditorScene::drawSMILE(QString smile){
     QVector<std::array<int,2> > cycles;
     int atomID=1;
     AtomGraphicItem* prevAtom=nullptr;
-
+    int branchInd;
     removeAll();
 
     for (int i=0;i<smile.size();i++){
         if (smile[i]=='('){
+            branchInd++;
             branchPoints.push_back(atomVec.last());
             i++;
         }
         if(smile[i]==')'){
+            branchInd--;
             prevAtom = branchPoints.takeLast();
             i++;
         }
@@ -302,7 +308,7 @@ void EditorScene::drawSMILE(QString smile){
             qDebug()<<"CYCLE";
             i++;
         }
-        AtomGraphicItem* atom=new AtomGraphicItem( QPointF(150+qrand()*15.0/RAND_MAX,150+qrand()*15.0/RAND_MAX), atomSymbol,charge,atomID);
+        AtomGraphicItem* atom=new AtomGraphicItem( QPointF(150+i*22,150+qrand()*12.0/RAND_MAX-25*branchInd), atomSymbol,charge,atomID);
         addItem(atom);
         atomVec.append(atom);
         if(cyclePoints.find(cycle)!=cyclePoints.end()){
@@ -343,37 +349,35 @@ void EditorScene::setBondOrder(int bo){
 }
 
 
-//Checks for colliding atoms and randomly moves them until there aren't any
 //TODO
 void EditorScene::clean(){
-    for(int i=0;i<atoms.size();i++){
-        QVector<BondGraphicsItem*> b = atoms[i]->getBonds();
 
-         for(int k=0;k<b.length();k++){
-            QLineF nLine=b[k]->line();
-            if(nLine.length()>35)
-                    continue;
+  //  std::sort(atoms.begin(),atoms.end(),compareAtoms);
+  //  for(int i=0;i<atoms.size();i++){
+        QVector<BondGraphicsItem*> b=bonds;
+        qreal ang=30;
+         for(int k=0;k<bonds.length();k++){
+            QLineF nLine=bonds[k]->line();
 
-            if(nLine.length()==0){
-                nLine=QLineF(nLine.p1(),nLine.p1()+QPointF(qrand()*15.0/RAND_MAX,qrand()*15.0/RAND_MAX));
-                qDebug()<<"nLL"<<k<<i;
-            }
-
+            ang=pow(-1,k)*27;
+            qDebug()<<ang;
             if(k>0){
             qDebug()<<"a1"<<nLine.angleTo(b[k-1]->line());
-            if(nLine.angleTo(b[k-1]->line())<25 || nLine.angleTo(b[k-1]->line())>335)
-                nLine.setAngle(b[k-1]->line().angle()+60);
+           // if(nLine.angleTo(b[k-1]->line())<25 || nLine.angleTo(b[k-1]->line())>335)
+
             qDebug()<<"a2"<<nLine.angleTo(b[k-1]->line());
             }
             nLine.setLength(50);
-            qDebug()<< b[k]->getAtoms()[0]->getId()<<b[k]->getAtoms()[1]->getId() <<"ID"<<i;
+            qDebug()<< b[k]->getAtoms()[0]->getId()<<b[k]->getAtoms()[1]->getId() <<"ID";
 
             if( b[k]->getAtoms()[0]->getId()<b[k]->getAtoms()[1]->getId() ){
+                nLine.setAngle(ang );
                 b[k]->getAtoms()[0]->setPos(nLine.p2());
                 b[k]->getAtoms()[1]->setPos(nLine.p1());
-
             }
             else{
+                nLine.setAngle(ang+180 );
+
                 b[k]->getAtoms()[1]->setPos(nLine.p2());
                 b[k]->getAtoms()[0]->setPos(nLine.p1());
 
@@ -381,29 +385,9 @@ void EditorScene::clean(){
             b[k]->setLine(nLine);
         }
 
-
+    foreach (AtomGraphicItem* a, atoms) {
+         a->moveBy(1,1);
     }
-    //    foreach (AtomGraphicItem* atom,atoms) {
-    //        QList<QGraphicsItem*> list=atom->collidingItems();
-    //        for (int i=0;i<list.size();i++){
-    //            if(list[i]->type()==BondGraphicsItem::Type){
-    //                list.removeAt(i);
-    //                i--;
-    //            }
-    //        }
-    //        while(!list.empty()){
-    //            qreal r1=(10-qrand()%20)/10.0;
-    //            qreal r2=(10-qrand()%20)/10.0;
-    //            atom->moveBy(r1*10,r2*10);
-    //            list=atom->collidingItems();
-    //            for (int i=0;i<list.size();i++){
-    //                if(list[i]->type()==BondGraphicsItem::Type){
-    //                    list.removeAt(i);
-    //                    i--;
-    //                }
-    //            }
-    //        }
-    //    }
 }
 //Remove every atom from scene
 void EditorScene::removeAll(){
@@ -429,7 +413,8 @@ void EditorScene::readFromImage(){
     AtomGraphicItem* newAtoms[2];
 
     newBonds= bd.detectEdges(molImg);
-  //  newBonds=mergeLines(newBonds);
+    newBonds=mergeLines(newBonds);
+    qreal bondLength=0;
     for (int i=0;i<newBonds.size();i++){
         newAtoms[0]= new AtomGraphicItem(QPointF(newBonds[i][0],newBonds[i][1]),std::string("C") ,0,id );
         newAtoms[1]= new AtomGraphicItem(QPointF(newBonds[i][2],newBonds[i][3]),std::string("C"),0,id+1);
@@ -437,37 +422,26 @@ void EditorScene::readFromImage(){
         bool addedAtoms=false;
 
         for(int j=0;j<2;j++){
-            //If there isn't QGraphicsitem at pos or item isn't atom, add new atom at pos.
-           // if(itemAt(newAtoms[j]->pos(),QTransform())==nullptr ||
-           //         itemAt(newAtoms[j]->pos() ,QTransform())->type()!=AtomGraphicItem::Type){
                 atoms.append(newAtoms[j]);
                 addItem(newAtoms[j]);
 
                 //find colliding items and remove colliding bonds from the list
-                QList<QGraphicsItem*> list=newAtoms[j]->collidingItems();
-                for (int k=0;k<list.size();k++){
-                    if(list[k]->type()==BondGraphicsItem::Type){
-                        list.removeAt(k);
-                        k--;
-                    }
-                }
-                addedAtoms=true;
+//                QList<QGraphicsItem*> list=newAtoms[j]->collidingItems();
+//                for (int k=0;k<list.size();k++){
+//                    if(list[k]->type()==BondGraphicsItem::Type){
+//                        list.removeAt(k);
+//                        k--;
+//                    }
+//                }
+//                addedAtoms=true;
 
-                //If new atom collides with some other atom they probably should be same atom
-                if(!list.empty()){
-                    qDebug()<<"List atom"<<list.size();
-                    removeAtom(newAtoms[j]);
-                    newAtoms[j]=dynamic_cast<AtomGraphicItem*> (list[0]);
-                }
-            //}
-
-            //if there already was an atom at position added atom is deleted and previous atom used instead
-//            else{
-//                removeAtom(newAtoms[j]);
-//                newAtoms[j]= dynamic_cast<AtomGraphicItem*> ( itemAt(newAtoms[j]->pos(),QTransform()));
-//            }
+//                //If new atom collides with some other atom they probably should be same atom
+//                if(!list.empty()){
+//                    qDebug()<<"List atom"<<list.size();
+//                    removeAtom(newAtoms[j]);
+//                    newAtoms[j]=dynamic_cast<AtomGraphicItem*> (list[0]);
+//                }
         }
-
         //Check if similar bond already exist
         bool newBond=true;
         for(int k=0;k<bonds.size();k++){
@@ -480,13 +454,14 @@ void EditorScene::readFromImage(){
         //if there isn't bond between atoms bond is added.
         if(newBond){
             addBond(newAtoms[0],newAtoms[1]);
+            if(bondLength<bonds.last()->line().length())  bondLength=bonds.last()->line().length();
             //mergeNearBonds(bonds.last() );
         }
         //}
     }
-    combBonds();
-
-
+   // combBonds();
+   // bondLength=bondLength/bonds.size();
+    qDebug()<<"BONDLENGHT"<<bondLength;
     atomFinder atomFind;
     std::vector<AtomGraphicItem* > atomicSymbols;
     //Try to find atomic symbols from image
@@ -496,8 +471,13 @@ void EditorScene::readFromImage(){
     for(int i=0;i<atomicSymbols.size();i++){
         insertAtom(atomicSymbols[i]);
         //merge atoms that are too close each other
-        mergeNearAtoms(atomicSymbols[i]);
+        mergeNearAtoms(atomicSymbols[i],bondLength/10);
     }
+    for(int j=0;j<atoms.size();j++){
+        mergeNearAtoms(atoms[j],5);
+    }
+
+   combBonds();
    mergeNearBonds();
    combBonds();
    mergeNearBonds();
@@ -505,13 +485,15 @@ void EditorScene::readFromImage(){
 for(int j=0;j<atoms.size();j++){
     atoms[j]->moveBy(0.1,0.1);
 }
-//todo move to own function
+mergeNearBonds();
+std::sort(atoms.begin(),atoms.end(), compareAtoms );
 
+//remove atoms that are too close to bond
+//todo move to own function
    for(int j=0;j<atoms.size();j++){
        AtomGraphicItem* atom=atoms[j];
        qreal dist = 5;
-       QList<QGraphicsItem*> nearItems = items(atom->x()-dist,atom->y()-dist,atom->boundingRect().width()+dist*2,atom->boundingRect().height()+dist*2,
-                                               Qt::IntersectsItemShape, Qt::AscendingOrder	 ,QTransform());
+       QList<QGraphicsItem*> nearItems = items(atom->x()-dist,atom->y()-dist,atom->boundingRect().width()+dist*2,atom->boundingRect().height()+dist*2,  Qt::IntersectsItemShape, Qt::AscendingOrder	 ,QTransform());
        for (int i=0;i<nearItems.size();i++){
 
            if(nearItems[i]->type()==BondGraphicsItem::Type){
@@ -649,7 +631,7 @@ QPointF* EditorScene::intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b
     return inter;
 }
 
-
+//Connects adjacent bonds
 void EditorScene::combBonds(){
     //return;
     int bondSize=bonds.size();
@@ -679,7 +661,7 @@ void EditorScene::combBonds(){
                     addBond(atom,bonds[j]->getAtoms()[1] );
 
 
-                qDebug()<<"inter"<<*inter;
+//                qDebug()<<"inter"<<*inter;
 //                bool merged = mergeNearAtoms(atom,40);
 //                bondSize=bonds.size();
 
@@ -731,14 +713,14 @@ std::vector<std::array<int, 4> > EditorScene::mergeLines(std::vector<std::array<
                 {
                     if(l_i.length()>l_j.length()){
                         qreal dl=l_j.length()*cos(l_i.angleTo(l_j));
-                     //   l_i.setLength(l_i.length()+dl);
-                     //   lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
+                //        l_i.setLength(l_i.length()+dl);
+                        lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
                         lines.erase(lines.begin()+j );
                         j--;
                     }
                     else{
-                     //   l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
-                     //   lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
+                   //     l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
+                        lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
                         lines.erase(lines.begin()+i);
                         i--;
                         l_i=QLine(lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
@@ -764,26 +746,23 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
                 {
                     if(l_i.length()>l_j.length()){
                         qreal dl=l_j.length()*cos(l_i.angleTo(l_j));
-                        l_i.setLength(l_i.length()+dl);
-                        l_i.setAngle(l_i.angle()/2+l_j.angle()/2);
+                     //   l_i.setLength(l_i.length()+dl);
+                     //   l_i.setAngle(l_i.angle()/2+l_j.angle()/2);
                        // lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
                         bonds[i]->setLine(l_i);
 
-                        qDebug()<<"J";
                         removeBond(bonds[j]);
                         bonds.erase(bonds.begin()+j );
-                        qDebug()<<"remove Bond J";
                         j--;
                     }
                     else{
                         qreal dl=l_i.length()*cos(l_j.angleTo(l_i));
-                        l_j.setLength(l_j.length()+dl);
-                        l_j.setAngle(l_i.angle()/2+l_j.angle()/2);
+                     //   l_j.setLength(l_j.length()+dl);
+                     //   l_j.setAngle(l_i.angle()/2+l_j.angle()/2);
 
                       //  l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
                      //   lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
                         bonds[j]->setLine(l_j);
-                        qDebug()<<"I";
 
                         removeBond(bonds[i]);
 
@@ -793,7 +772,6 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
                           l_i=bonds[i]->line();
                         else
                             break;
-                        qDebug()<<"remove Bond I";
                     }
                 }
             }
@@ -804,6 +782,7 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
 }
 void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
 {
+
     qDebug()<<"List"<<bonds.size();
     BondGraphicsItem* tmp;
     QLineF l_i=bond->line();
@@ -817,10 +796,9 @@ void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
             {
                 if(l_i.length()>l_j.length()){
                     qreal dl=l_j.length()*cos(l_i.angleTo(l_j));
-                    l_i.setLength(l_i.length()+dl);
-                    l_i.setAngle(l_i.angle()/2.0 + l_j.angle()/2.0  );
+            //        l_i.setLength(l_i.length()+dl);
+             //       l_i.setAngle(l_i.angle()/2.0 + l_j.angle()/2.0  );
                     //lines[i]= std::array<int,4> { l_i.x1(),l_i.y1(),l_i.x2(),l_i.y2()};
-                    qDebug()<<"REMOVE BOND J";
 
                     tmp=bonds[j];
                    // bonds.erase(bonds.begin()+j );
@@ -828,11 +806,10 @@ void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
                     j--;
                 }
                 else{
-                    l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
-                    l_j.setAngle(l_i.angle()/2.0 + l_j.angle()/2.0  );
+               //     l_j.setLength(l_j.length()+l_i.length()*cos(l_j.angleTo(l_i)));
+               //     l_j.setAngle(l_i.angle()/2.0 + l_j.angle()/2.0  );
 
                     //lines[j]= std::array<int,4> {l_j.x1(),l_j.y1(),l_j.x2(),l_j.y2()};
-                    qDebug()<<"REMOVE BOND BOND";
                     removeBond(bond);
                     return;
                 }

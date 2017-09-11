@@ -14,17 +14,21 @@ cv::Mat MoleculeGrabber::grabMolecule(std::string filename){
     cv::Mat threshOut;
 
     cv::Mat src = cv::imread(filename,cv::IMREAD_COLOR);
-    cv::Mat img,srcBW;
-    cv::resize(src,src,cv::Size(),0.1,0.1);
+    cv::Mat img,srcBW,im;
 
-    cv::cvtColor( src, srcBW, cv::COLOR_BGR2GRAY );
+    if(src.rows>1000)
+        cv::resize(src,im,cv::Size(),0.1,0.1);
+    else
+        im=src;
+
+    cv::cvtColor( im, srcBW, cv::COLOR_BGR2GRAY );
     cv::bilateralFilter(srcBW,img,50,75,5);
     cv::adaptiveThreshold(img,threshOut,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,1,125,0);
     cv::Mat kernel =cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15,15));
     cv::dilate(threshOut,threshOut,kernel);
     cv::findContours(threshOut,contours, CV_RETR_LIST ,cv::CHAIN_APPROX_NONE,cv::Point(0,0));
     cv::vector<cv::Rect> boundRects(contours.size());
-    cv::Point imgCenter=cv::Point(src.cols/2,src.rows/2);
+    cv::Point imgCenter=cv::Point(im.cols/2,im.rows/2);
     double minDist=INT_MAX;
     int nearInd;
     for(int i=0;i<contours.size();i++){
@@ -38,11 +42,12 @@ cv::Mat MoleculeGrabber::grabMolecule(std::string filename){
         }
     }
 
-    cv::Mat mol(src,boundRects[nearInd] );
-    cv::namedWindow( "aoe", cv::WINDOW_AUTOSIZE );
-    cv::imshow( "aoe", mol );
+    cv::Mat mol(im,boundRects[nearInd] );
+    if(src.rows>1000) cv::resize(mol,mol,cv::Size(),2,2);
+//    cv::namedWindow( "aoe", cv::WINDOW_AUTOSIZE );
+//    cv::imshow( "aoe", mol );
 
-    cv::waitKey(0);
+//    cv::waitKey(0);
 
 
     return mol;
