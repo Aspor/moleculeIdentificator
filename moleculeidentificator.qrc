@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/minus.png</file>
+        <file>icons/plus.png</file>
+        <file>icons/moveArrow.png</file>
+        <file>Camera.qml</file>
+    </qresource>
+</RCC>

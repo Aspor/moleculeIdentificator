@@ -23,11 +23,11 @@ EditorView::EditorView(QWidget *parent) :
     connect(ui->GenerateFromSMILE,SIGNAL(clicked(bool)),this,SLOT(fromSMILE()));
     connect(ui->buttonElements,SIGNAL(clicked(bool)),this,SLOT(elements()));
     connect(ui->buttonImage,SIGNAL(clicked(bool)),scene,SLOT(readFromImage()));
+    connect(ui->buttonCamera,SIGNAL(clicked(bool)),this,SLOT(camera()));
 
     ui->buttonAdd->setIcon(QIcon(":/icons/plus.png"));
     ui->buttonRemove->setIcon(QIcon(":/icons/minus.png"));
     ui->buttonEdit->setIcon(QIcon(":/icons/moveArrow.png"));
-
 
 }
 
@@ -58,6 +58,10 @@ EditorScene* EditorView::getScene(){
 void EditorView::elements(){
     emit elements(2);
 }
+void EditorView::camera(){
+    emit camera(3);
+}
+
 void EditorView::setElement(QString element){
     //ui->comboBox->addItem(element);
 

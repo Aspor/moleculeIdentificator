@@ -7,7 +7,6 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int charge, in
     QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
 {
     this->charge=charge;
-
     this->atomicSymbol = atomicSymbol.toStdString();
     this->id=id;
     updateText();

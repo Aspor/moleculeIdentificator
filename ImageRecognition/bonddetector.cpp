@@ -29,10 +29,6 @@ std::vector<std::array<int,4> > bondDetector::detectEdges(cv::Mat src )
     cv::Mat kernel =cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3));
     cv::dilate(dst,dst,kernel);
 
-  //  cv::namedWindow( "image", cv::WINDOW_AUTOSIZE );
-  //  cv::imshow( "image", dst );
-
-  //  cv::waitKey(0);
     cv::HoughLinesP( dst, lines, 1, CV_PI/90,5,25, 5);
 
     std::vector<std::array<int,4> > bonds;

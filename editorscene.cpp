@@ -188,9 +188,7 @@ std::vector<std::vector<int> > EditorScene::getConnectivityMatrix(){
      while(atoms.first()->getBonds().size()==0){
            removeAtom(atoms.first());
     }
-
     std::vector<std::vector<int> > conMatrix=std::vector<std::vector<int> >(atoms.size(), std::vector<int> (atoms.size(),0));
-
     //we are only intrested in bonds
     foreach (BondGraphicsItem* bond, bonds){
         //ignore hydrogens, they are reduntant in SMILES
@@ -230,17 +228,17 @@ void EditorScene::drawSMILE(QString smile){
     removeAll();
 
     for (int i=0;i<smile.size();i++){
-        if (smile[i]=='('){
-            branchInd++;
-            branchPoints.push_back(atomVec.last());
-            i++;
-        }
+
         if(smile[i]==')'){
             branchInd--;
             prevAtom = branchPoints.takeLast();
             i++;
         }
-
+        if (smile[i]=='('){
+            branchInd++;
+            branchPoints.push_back(atomVec.last());
+            i++;
+        }
         //switch case for bond order
         switch ( int(smile[i].toLatin1())) {
         case '=':
@@ -263,6 +261,7 @@ void EditorScene::drawSMILE(QString smile){
             bondOrder=1;
             break;
         }
+
 
         //If atom has charge it's between square bracets
         bool charged=false;
@@ -397,13 +396,29 @@ void EditorScene::removeAll(){
     }
 }
 
-void EditorScene::readFromImage(){
+void EditorScene::readFromImage(QImage image){// std::string file){
     //clear scene
     removeAll();
+   cv::Mat byteImage;
 
-    std::string file =QFileDialog::getOpenFileName().toStdString();
+   qDebug()<<image.format()<<"IMAGE FORM";
+
+
+    if(image.width()==0 ){
+        QString file =QFileDialog::getOpenFileName();
+        byteImage=cv::imread(file.toStdString(),cv::IMREAD_COLOR );
+        image.load(file);
+    }
+    else
+    {
+        image=image.convertToFormat(QImage::Format_ARGB32);
+        image.invertPixels();
+        qDebug()<<image.format()<<"IMAGE FORM 2";
+        byteImage = cv::Mat(image.height(), image.width(), CV_8UC4, image.bits());
+
+    }
     MoleculeGrabber molGrab=MoleculeGrabber();
-    cv::Mat molImg=molGrab.grabMolecule(file);
+    cv::Mat molImg=molGrab.grabMolecule(byteImage);
     bondDetector bd =bondDetector();
 
     //bonds start and end positions
@@ -477,10 +492,9 @@ void EditorScene::readFromImage(){
         mergeNearAtoms(atoms[j],5);
     }
 
-   combBonds();
-   mergeNearBonds();
-   combBonds();
-   mergeNearBonds();
+  //mergeNearBonds();
+  // combBonds();
+ //  mergeNearBonds();
 
 for(int j=0;j<atoms.size();j++){
     atoms[j]->moveBy(0.1,0.1);
@@ -782,7 +796,6 @@ QVector <BondGraphicsItem*> EditorScene::mergeLines(QVector <BondGraphicsItem*> 
 }
 void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
 {
-
     qDebug()<<"List"<<bonds.size();
     BondGraphicsItem* tmp;
     QLineF l_i=bond->line();
@@ -818,3 +831,6 @@ void EditorScene::mergeNearBonds(BondGraphicsItem* bond)
     }
     return;
 }
+
+
+

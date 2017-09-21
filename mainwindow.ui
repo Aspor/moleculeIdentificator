@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -54,6 +54,13 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="page_4">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="ImageCapture" name="imageCapture" native="true"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -76,6 +83,12 @@
    <class>PeriodicTable</class>
    <extends>QWidget</extends>
    <header location="global">periodictable.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ImageCapture</class>
+   <extends>QWidget</extends>
+   <header location="global">imagecapture.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

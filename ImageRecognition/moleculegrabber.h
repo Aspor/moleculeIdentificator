@@ -10,7 +10,7 @@ class MoleculeGrabber
 {
 public:
     MoleculeGrabber();
-    cv::Mat grabMolecule(std::string filename);
+    cv::Mat grabMolecule(cv::Mat src);
 
 };
 

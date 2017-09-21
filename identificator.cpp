@@ -23,13 +23,10 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
     branchMap.clear();
     visitedAtoms.resize(atoms.size(),false);
     cycleID=0;
-
     dfs(0,bonds,true,-1);
     canonize(branchMap.find(nullptr)->second,branchMap,branchMap.find(nullptr));
-
-    string SMILE=generateSMILE  ( branchMap.find(nullptr)->second ,bonds);
+    string SMILE=generateSMILE  (branchMap.find(nullptr)->second, bonds);
     return SMILE;
-
 }
 
 //todo canonize
@@ -39,14 +36,11 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
     const string bondSymbols[]={"","","=","#","$"};
     qDebug()<<"branch"<<branch.size();
     string smile="";
-
     for (int i=0;i<branch.size();i++){
         smile+=branch[i]->SMILEout();
         while(cycleMap.count(branch[i]) !=0){
             multimap<Atom*,int>::iterator cyc=cycleMap.find(branch[i]);
-
             smile+=bondSymbols[cycleBonds.find(cyc->second)->second];
-
             //cycle number as character
             smile+='0'+ cyc->second;            
             cycleMap.erase(cyc);
@@ -59,8 +53,8 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
 
             int nextAtomInd= distance(atoms.begin(), find(atoms.begin(),atoms.end(),nextAtom));
 
-            smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
             smile+="(";
+            smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
             smile+=generateSMILE(branchPoint->second, bonds);
             smile+=")";
             branchMap.erase(branchPoint);
@@ -70,7 +64,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
         if(nextAtomInd!=atoms.size())
             smile+=bondSymbols[bonds[thisAtomInd][nextAtomInd]];
     }
-
     return smile;
 }
 
@@ -99,25 +92,19 @@ void Identificator::dfs(int atomID,std::vector<std::vector<int> > bonds ,bool ne
 
         //If there exixts a bond
         if(bonds[atomID][i] !=0){
-
             //If atom hasn't been visited before
             if(!visitedAtoms[i]){
-
 //                //If there are more than one bond from first atom
 //                if(parent==-1 && tmp){
 //                    branch=true;
 //                }
-
                 dfs(i,bonds,branch,atomID);
                 //If there are more than one bond from atom there a branch
                 branch=true;
             }
-
             //If we have visited atom before there a cycle
             else if(parent!=i){
                 //int cycleP[2]={atomID,i};
-
-
                 int countA= cycleMap.count(atoms[atomID]);
                 int countI =cycleMap.count(atoms[i]);
                 std::pair <std::multimap<Atom*,int>::iterator, std::multimap<Atom*,int>::iterator>

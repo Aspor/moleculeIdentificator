@@ -13,7 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView,SIGNAL(elements(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
     connect(ui->periodicTable,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
     connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->graphicsView,SLOT(setElement(QString)));
-
+    connect(ui->graphicsView,SIGNAL(camera(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+    connect(ui->imageCapture,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+  //  connect(ui->graphicsView,SIGNAL(camera(int)),ui->imageCapture,SLOT(img()));
+    connect(ui->imageCapture,SIGNAL(image(QImage)),ui->graphicsView->getScene(),SLOT(readFromImage(QImage)));
 
     ui->stackedWidget->setCurrentIndex(0);
     api=new API("http://www.chemspider.com","");

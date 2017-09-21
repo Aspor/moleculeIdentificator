@@ -10,6 +10,7 @@
 #include "ImageRecognition/blobdetector.h"
 #include "ImageRecognition/atomfinder.h"
 #include "ImageRecognition/moleculegrabber.h"
+#include "imagecapture.h"
 
 class EditorScene: public QGraphicsScene
 {
@@ -31,7 +32,7 @@ public slots:
     void setBondOrder(int);
     void drawSMILE(QString);
 
-    void readFromImage();
+    void readFromImage(QImage img=QImage(0,0,QImage::Format_RGB32));
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;

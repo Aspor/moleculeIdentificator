@@ -21,6 +21,7 @@ public:
 signals:
     void molInf(QString);
     void elements(int );
+    void camera(int);
 
 public slots:
     void getSMILE();
@@ -30,7 +31,7 @@ private slots:
     void moleculeInfo();
     void fromSMILE();
     void elements();
-
+    void camera();
 
 private:
     Ui::EditorView *ui;
