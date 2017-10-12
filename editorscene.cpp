@@ -464,14 +464,11 @@ void EditorScene::readFromImage(QImage image){// std::string file){
     }
 
     //combine bonds futher appart
-//    combBonds(55,250);
-//    mergeLines(bonds);
     for(int j=0;j<atoms.size();j++){
         atoms[j]->moveBy(0.1,0.1);
     }
+    //combine bonds futher appart
     combBonds(55,250);
-    //mergeLines(bonds);
-
     for(int j=0;j<atoms.size();j++){
         mergeNearAtoms(atoms[j],5);
     }
