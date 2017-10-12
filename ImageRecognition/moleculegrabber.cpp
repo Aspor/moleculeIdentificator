@@ -21,12 +21,16 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
         im=src;
 
     cv::cvtColor( im, srcBW, cv::COLOR_RGB2GRAY);
+
+    //remove noice and gridlines
     cv::bilateralFilter(srcBW,img,50,75,5);
     cv::adaptiveThreshold(img,threshOut,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,1,125,0);
+
+    //dilate to combine fragments
     cv::Mat kernel =cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25,25));
     cv::dilate(threshOut,threshOut,kernel);
-    //cv::dilate(threshOut,threshOut,kernel);
 
+    //find contours
     cv::findContours(threshOut,contours, CV_RETR_LIST ,cv::CHAIN_APPROX_NONE,cv::Point(0,0));
     cv::vector<cv::Rect> boundRects(contours.size());
     cv::Point imgCenter=cv::Point(im.cols/2,im.rows/2);
@@ -53,11 +57,9 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
 
 //    cv::namedWindow( "image", cv::WINDOW_AUTOSIZE );
 //    cv::imshow( "image", mol );
-
 //    cv::waitKey(0);
 
     if(src.rows>1000) cv::resize(mol,mol,cv::Size(),2,2);
-
     cv::namedWindow( "img", cv::WINDOW_AUTOSIZE );
     cv::imshow( "img", mol );
 

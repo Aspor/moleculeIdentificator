@@ -11,11 +11,10 @@ atomFinder::atomFinder()
 
 std::vector<AtomGraphicItem *> atomFinder::labelAtoms(cv::Mat src, std::vector<std::string> atomsSymbols){
 
-    //Mat src = imread(file,IMREAD_COLOR );
     findBlobs( src);
-    qDebug()<<"countours.size"<<countours.size()<<atoms.size();
+    //qDebug()<<"countours.size"<<countours.size()<<atoms.size();
     matchAtomPos( );
-    qDebug()<<"countours.size"<<countours.size();
+    //qDebug()<<"countours.size"<<countours.size();
     for(int i=0;i<countours.size();i++){
         std::string label = labelBlob(countours[i],src);
         //if(label.compare(" ")){
@@ -67,26 +66,20 @@ void atomFinder::matchAtomPos(){
         bool comb=false;
         for (int j=i+1; j<countours.size();j++){
             Rect rect2=boundingRect(countours[j]);
-            //int dist=norm(rect1.tl-rect2.tl);
             int xDist=abs( rect1.x-rect2.x)-5;
             int yDist=abs(rect1.y-rect2.y)-5;
             if((xDist<rect1.width || xDist<rect2.width) && (yDist<rect1.height||yDist<rect2.height)){
-            //if((norm(rect1.tl()-rect2.tl()) < rect1.width+rect2.width-15 ) || (norm( rect1.tl()-rect2.tl()) < rect1.height+rect2.height-15 )){
                 vector<Point> count;
                 hconcat(countours[i],countours[j],count);
-             //if(count.size()<countours[i].size()+countours[j].size()){
-                qDebug()<< countours[i].size()<<countours[j].size() <<count.size()<<"count"<<i<<j;
+                //qDebug()<< countours[i].size()<<countours[j].size() <<count.size()<<"count"<<i<<j;
                 comb=true;
                 countours[i]=count;
                 rect1=boundingRect(countours[i]);
                 countours.erase(countours.begin()+j);
-                //countours.insert(countours.begin(),count);
                 j--;
 
             }
         }
-//        if(comb)
-//            i--;
     }
 }
 
