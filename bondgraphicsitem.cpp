@@ -10,7 +10,6 @@ BondGraphicsItem::BondGraphicsItem(AtomGraphicItem* atoms[2],int bondOrder): QGr
     setFlag(QGraphicsItem::ItemIsSelectable);
     this->bondOrder=bondOrder;
     setZValue(-1);
-
 }
 BondGraphicsItem::~BondGraphicsItem(){
     atoms[0]->removeBond(this);

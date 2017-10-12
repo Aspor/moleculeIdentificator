@@ -7,7 +7,6 @@
 #include "atomgraphicitem.h"
 #include "bondgraphicsitem.h"
 #include "ImageRecognition/bonddetector.h"
-#include "ImageRecognition/blobdetector.h"
 #include "ImageRecognition/atomfinder.h"
 #include "ImageRecognition/moleculegrabber.h"
 #include "imagecapture.h"
@@ -72,13 +71,19 @@ private:
 
     void clean();
     void removeAll();
-    void combBonds();
+    void combBonds(qreal minThresh=20, qreal maxThresh=50);
 
-    QPointF* intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b2);
+    QPointF* intersectingBonds(BondGraphicsItem* b1, BondGraphicsItem* b2, qreal minThresh=20, qreal maxThresh=50);
 
     std::vector<std::array<int, 4> > mergeLines(std::vector<std::array<int, 4> > );
     QVector<BondGraphicsItem*> mergeLines(QVector<BondGraphicsItem*>);
     void mergeLines(BondGraphicsItem* bond);
+
+    QLineF combineLines(QLineF l1,QLineF l2);
+    qreal lineDistance(QLineF l1,QLineF l2);
+    qreal pointLineDist(QLineF v, QPointF p );
+
+
 
 };
 

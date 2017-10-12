@@ -64,7 +64,6 @@ void EditorView::camera(){
 
 void EditorView::setElement(QString element){
     //ui->comboBox->addItem(element);
-
     ui->comboBox->setCurrentText(element);
     if(ui->comboBox->currentText()!=element){
         ui->comboBox->addItem(element);

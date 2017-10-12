@@ -32,7 +32,6 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
 //todo canonize
 //TODO cycle bondOrder
 std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int> >bonds){
-
     const string bondSymbols[]={"","","=","#","$"};
     qDebug()<<"branch"<<branch.size();
     string smile="";
@@ -45,7 +44,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
             smile+='0'+ cyc->second;            
             cycleMap.erase(cyc);
         }
-
         int thisAtomInd = distance (atoms.begin(), find(atoms.begin(),atoms.end(), branch[i]));
         multimap<Atom*,vector<Atom*> >::iterator branchPoint = branchMap.find(branch[i]);
         while(branchPoint!=branchMap.end()){
@@ -66,8 +64,6 @@ std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int
     }
     return smile;
 }
-
-
 //TODO canonize
 void Identificator::dfs(int atomID,std::vector<std::vector<int> > bonds ,bool newBranch, int parent ){
     std::multimap<Atom*,std::vector<Atom*> >::iterator tmpBranchInd =branchInd;

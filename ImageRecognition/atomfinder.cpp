@@ -51,8 +51,6 @@ void atomFinder::matchAtomPos(){
         avrgArea+=boundingRect(countours[i]).area()/numOfCountours;
     }
     qDebug()<<avrgArea<<"avrgArea";
-
-
     //Remove countours that are larger than avarange or not square enought
     //Skeleton is among countours and it should be removed.
     for (int i=0; i<countours.size();i++){
@@ -63,7 +61,6 @@ void atomFinder::matchAtomPos(){
             i--;
         }
     }
-
     //Combine countours that are near each other
     for (int i=0; i<countours.size()-1;i++){
         Rect rect1=boundingRect(countours[i]);

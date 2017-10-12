@@ -6,6 +6,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv/cv.h"
 
+//Finds blobs and chooses one that is nearest of center
+
 class MoleculeGrabber
 {
 public:

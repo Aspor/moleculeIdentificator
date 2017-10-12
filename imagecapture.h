@@ -8,10 +8,6 @@
 #include<QtMultimedia/QCameraInfo>
 #include<QtMultimediaWidgets/QCameraViewfinder>
 #include<QtMultimedia/QCameraImageCapture>
-#include <QQmlComponent>
-#include<QQuickView>
-#include<QtQml>
-#include<QQuickWindow>
 #include<QQuickWidget>
 #include<QQuickItem>
 #include<QQuickImageProvider>

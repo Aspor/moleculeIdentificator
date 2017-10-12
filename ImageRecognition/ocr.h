@@ -3,6 +3,7 @@
 
 #include "opencv2/opencv.hpp"
 
+//Optical character regocniton
 
 class OCR
 {

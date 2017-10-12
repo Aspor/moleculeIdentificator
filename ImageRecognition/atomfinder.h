@@ -5,6 +5,8 @@
 #include <atomgraphicitem.h>
 #include "ocr.h"
 
+//Find blobs rom image and laber them
+
 class atomFinder
 {
 public:

@@ -1,5 +1,5 @@
 #include "imagecapture.h"
-#include <QThread>
+//#include <QThread>
 #include"ui_imagecapture.h"
 
 ImageCapture::ImageCapture(QWidget *parent) : QWidget(parent), ui(new Ui::imageCapture)
@@ -17,8 +17,6 @@ ImageCapture::ImageCapture(QWidget *parent) : QWidget(parent), ui(new Ui::imageC
 
     imgProv=static_cast<QQuickImageProvider*> (imgProvBase);
     qDebug()<<"img"<<imgProvBase;
-
-
     a = new QCameraImageCapture(camera);
    // connect(a,SIGNAL(imageCaptured(int,QImage)),this,SLOT(getImage(int,QImage)));
     connect(qmlUi,SIGNAL(accept(QString,QSizeF,QSizeF)),this,SLOT(getImage(QString,QSizeF,QSizeF)));
