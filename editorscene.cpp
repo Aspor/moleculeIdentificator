@@ -383,13 +383,19 @@ void EditorScene::removeAll(){
 
 void EditorScene::readFromImage(QImage image){// std::string file){
     //clear scene
-    removeAll();
     cv::Mat byteImage;
 
     //if there is no image open file dialog
+    
+
     if(image.width()==0 ){
         QString file =QFileDialog::getOpenFileName();
+         try{
         byteImage=cv::imread(file.toStdString(),cv::IMREAD_COLOR );
+    }
+    catch(cv::Exception ex){
+        return;
+    }
         image.load(file);
     }
     else
@@ -397,10 +403,20 @@ void EditorScene::readFromImage(QImage image){// std::string file){
         image=image.convertToFormat(QImage::Format_ARGB32);
         byteImage = cv::Mat(image.height(), image.width(), CV_8UC4, image.bits());
     }
-
+    
+    removeAll();
+    cv::Mat molImg;
     //find molecule from image
     MoleculeGrabber molGrab=MoleculeGrabber();
-    cv::Mat molImg=molGrab.grabMolecule(byteImage);
+    try
+    {
+    molImg=molGrab.grabMolecule(byteImage);
+    }
+    catch(cv::Exception ex)
+    {
+        return;
+    }
+
     bondDetector bd=bondDetector();
 
     //bonds start and end positions
@@ -440,8 +456,8 @@ void EditorScene::readFromImage(QImage image){// std::string file){
     atomFinder atomFind;
     std::vector<AtomGraphicItem* > atomicSymbols;
     //Try to find atomic symbols from image
-    atomicSymbols = atomFind.labelAtoms(molImg,std::vector<std::string>());
 
+    atomicSymbols = atomFind.labelAtoms(molImg,std::vector<std::string>());
     //Insert new atoms to position corresponding image
     for(int i=0;i<atomicSymbols.size();i++){
         insertAtom(atomicSymbols[i]);
@@ -476,6 +492,7 @@ void EditorScene::readFromImage(QImage image){// std::string file){
         atoms[j]->moveBy(0.1,0.1);
     }
 
+    qDebug()<<"REMOVE NEAR ATOMS";
     std::sort(atoms.begin(),atoms.end(), compareAtoms );
     //remove bonds that overlap atomn
     //TODO move to own function
@@ -488,10 +505,10 @@ void EditorScene::readFromImage(QImage image){// std::string file){
                 BondGraphicsItem* nearBond=dynamic_cast<BondGraphicsItem*>(nearItems[i]);
                 AtomGraphicItem** bondAtoms = nearBond->getAtoms();
                 if((bondAtoms[0]!=atom) &&(bondAtoms[1]!=atom )){
-                    //qDebug()<<"Removed atom near bond"<<j<<i;
+                    qDebug()<<"Removed atom near bond"<<j<<i;
                     //nearBond->setBondOrder(3);
                     //removeAtom(atom);
-                    i--;
+                    //i--;
                     removeBond(nearBond);
                     //j--;
                     break;
@@ -499,7 +516,6 @@ void EditorScene::readFromImage(QImage image){// std::string file){
             }
         }
     }
-
 }
 
 AtomGraphicItem* EditorScene::atomAt(QPointF pos){
