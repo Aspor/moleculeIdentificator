@@ -17,7 +17,7 @@ public:
 signals:
     void toEditor(int);
 public slots:
-    void fillInfoTable(std::vector<std::array<std::string,2> >);
+    void fillInfoTable(std::vector<std::pair<std::string,std::string> >);
 
 private:
     Ui::MoleculeInfoView *ui;

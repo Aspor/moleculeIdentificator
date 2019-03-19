@@ -27,6 +27,8 @@ signals:
     void back(int);
 
 public slots:
+    void start();
+    void cancel();
 
 private:
     bool checkCameraAvailability();
@@ -36,9 +38,12 @@ private:
     QCameraImageCapture* a;
     Ui::imageCapture *ui;
     QQuickImageProvider* imgProv;
+    void initialaizeCamera();
+    bool initialized;
+    QQuickItem* qmlUi;
 
 private slots:
-    void getImage(QString, QSizeF, QSizeF);
+    void getImage(QString);
 };
 
 #endif // IMAGECAPTURE_H

@@ -27,7 +27,7 @@ public:
     enum { Type = UserType + 1 };
     int type() const;
 
-    virtual QPainterPath shape() const;
+//    virtual QPainterPath shape() const;
 
 signals:
     void posChange();

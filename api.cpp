@@ -51,7 +51,7 @@ Molecule* API::search(QString SMILE){
         return new Molecule();
     reader->clear();
     reader->setDevice(molInfoReply);
-    std::vector<std::array<std::string,2> >mol;
+    std::vector<std::pair<std::string,std::string> >mol;
 
     reader->readNext();
     reader->readNext();
@@ -62,6 +62,7 @@ Molecule* API::search(QString SMILE){
             std::string data=reader->readElementText().toStdString();
             mol.push_back({name,data});
         }
+
     }
     csidReply->deleteLater();
     molInfoReply->deleteLater();

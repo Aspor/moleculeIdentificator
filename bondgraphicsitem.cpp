@@ -56,7 +56,7 @@ QPainterPath BondGraphicsItem::shape() const{
     qreal c=cos(angle*3.14/180.0);
     qreal s=sin(angle*3.14/180.0);
     qreal i=4.0;
-    qreal padding=2.5;
+    qreal padding=15;
 
     QPolygon pol=QPolygon();
     pol.push_back((line().p1()+QPointF(s*i*padding,c*i*padding)).toPoint());
@@ -75,15 +75,17 @@ QPainterPath BondGraphicsItem::shape() const{
 
 void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
     QPen myPen=pen();
+    myPen.setWidth(3);
     painter->setPen(myPen);
     //painter->drawLine(line());
-    QVector<QLineF> lines;
-    lines.push_back(line());
+//    QVector<QLineF> lines;
+//    lines.push_back(line());
     qreal angle=line().angle();
     qreal c=cos(angle*3.14/180.0);
     qreal s=sin(angle*3.14/180.0);
-    QLineF l= QLineF();
+    qreal padding=3;
 
+    QLineF l= QLineF();
     switch (bondOrder) {
     case 1:
         // ::fromPolar(line().length(),angle);
@@ -95,7 +97,7 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     case 2:
         for(int i=0;i<4;i+=2){
            // QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-            l.setP1(line().p1()+QPointF( (1-i)*s*1, (1-i)* c*1));
+            l.setP1(line().p1()+QPointF( (1-i)*s*1*padding, (1-i)* c*1)*padding);
             l.setLength(line().length()-5);
             l.setAngle(angle);
             painter->drawLine(l);
@@ -104,7 +106,7 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     case 3:
         for(int i=0;i<3;i++){
            // QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-            l.setP1(line().p1()+QPointF( (1-i)*s*2, (1-i)*c*2));
+            l.setP1(line().p1()+QPointF( (1-i)*s*2*padding, (1-i)*c*2)*padding);
             l.setLength(line().length()-5);
             l.setAngle(angle);
             painter->drawLine(l);
@@ -113,7 +115,7 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     case 4:
         for(int i=0;i<8;i+=2){
           //  QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-            l.setP1(line().p1()+QPointF( (3-i)*s*1, (3-i)*c*1));
+            l.setP1(line().p1()+QPointF( (3-i)*s*1*padding, (3-i)*c*1)*padding);
             l.setLength(line().length()-5);
             l.setAngle(angle);
             painter->drawLine(l);

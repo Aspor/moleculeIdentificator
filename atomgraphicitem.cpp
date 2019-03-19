@@ -10,7 +10,7 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int charge, in
     this->atomicSymbol = atomicSymbol.toStdString();
     this->id=id;
     updateText();
-
+    setFont(QFont("Times",25));
     setPos(mapToScene(pos));
     setZValue(2);
 
@@ -23,6 +23,7 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,std::string atomicSymbol,int charge
     QGraphicsTextItem(), Atom(atomicSymbol,charge,id)
 {
     this->charge=charge;
+    setFont(QFont("Times",25));
 
     this->atomicSymbol = atomicSymbol;
     this->id=id;
@@ -41,6 +42,8 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,std::string atomicSymbol,int charge
 AtomGraphicItem::AtomGraphicItem(QString atomicSymbol, int charge ,int id):
     QGraphicsTextItem(), Atom(atomicSymbol.toStdString(),charge,id)
 {
+    setFont(QFont("Times",25));
+
     this->charge=charge;
     this->atomicSymbol= atomicSymbol.toStdString();
     this->id=id;
@@ -103,8 +106,8 @@ QVector<BondGraphicsItem*> AtomGraphicItem::getBonds(){
     return bonds;
 }
 
-QPainterPath AtomGraphicItem::shape() const{
-    QPainterPath path;
-    path.addRect(-6,-6,24,24);
-    return path;
-}
+//QPainterPath AtomGraphicItem::shape() const{
+//    QPainterPath path;
+//    path.addRect(-6,-6,124,124);
+//    return path;
+//}

@@ -7,9 +7,7 @@ using namespace cv;
 
 //Compare position of two rectangles so elements
 //are read from left to right and top to bottom.
-
-bool compPos(vector<Point> a,vector<Point> b  ){
-    qDebug()<<"compPOS";
+bool compPos(std::vector<Point> a,std::vector<Point> b  ){
     Rect A = boundingRect(a);
     Rect B = boundingRect(b);
 
@@ -30,8 +28,8 @@ OCR::OCR()
 std::string OCR::ocr(Mat atom){
 
     //Split elements to single characters
-    vector<Mat> chars = split(atom);
-    std::string atomstr="";
+    std::vector<Mat> chars = split(atom);
+    std::string atomstr=" ";
 
     //Regocnice characters and append them to atom string
     for(int i=0;i<chars.size();i++){
@@ -47,8 +45,8 @@ std::string OCR::ocr(Mat atom){
     return atomstr;
 }
 
-vector<Mat> OCR::split(Mat atom){
-    vector<Mat> atoms;
+std::vector<Mat> OCR::split(Mat atom){
+    std::vector<Mat> atoms;
     Mat img=atom;
     cvtColor( atom, img, COLOR_BGR2GRAY );
     bitwise_not(img,img);
@@ -58,15 +56,14 @@ vector<Mat> OCR::split(Mat atom){
 //    imshow("atoms",atom);
 //    waitKey(0);
 
-    vector<vector<Point> >contours;
-    findContours(img,contours, CV_RETR_LIST, CHAIN_APPROX_NONE, Point(0,0) );
+    std::vector<std::vector<Point> >contours;
+    findContours(img,contours, RETR_LIST, CHAIN_APPROX_NONE, Point(0,0) );
 
     std::sort(contours.begin(),contours.end(),compPos);
 
     for(int i=0;i<contours.size();i++){
         Rect rect = boundingRect(contours[i]);
         Mat mat(atom,rect);
-        qDebug()<<"i"<<i;
         if(sum(mat)[0]>500&&rect.area()<500 && rect.width/rect.height<10 && rect.height/rect.width<10 ) {
             qDebug()<<rect.area();
             atoms.push_back(mat);

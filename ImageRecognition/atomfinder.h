@@ -1,25 +1,27 @@
 #ifndef ATOMFINDER_H
 #define ATOMFINDER_H
 #include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
 #include <atomgraphicitem.h>
 #include "ocr.h"
 
+
 //Find blobs rom image and laber them
 
-class atomFinder
+class AtomFinder
 {
 public:
-    atomFinder();
+    AtomFinder();
     void findBlobs(cv::Mat img);
     void matchAtomPos(std::vector<std::array<int,2> > atomPos );
     void matchAtomPos();
 
-    std::string labelBlob(cv::vector<cv::Point>,cv::Mat src);
+    std::string labelBlob(std::vector<cv::Point>,cv::Mat src);
     std::vector< AtomGraphicItem*> labelAtoms(cv::Mat src, std::vector<std::string> atoms);
 
 private:
-    cv::vector<cv::vector< cv::Point> > countours;
+    std::vector<std::vector< cv::Point> > countours;
     std::vector<AtomGraphicItem* > atoms;
     std::vector<std::array<int,2> > pos;
 

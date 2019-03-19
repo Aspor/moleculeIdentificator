@@ -3,18 +3,18 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include "opencv/cv.h"
+
 
 #include <vector>
 
 //Finds lines from images
 
-class bondDetector
+class BondDetector
 {
 public:
-    bondDetector();
+    BondDetector();
 
-    std::vector<std::array<int,4> > detectEdges(cv::Mat);
+    std::vector<std::array<double,4> > detectEdges(cv::Mat);
 };
 
 

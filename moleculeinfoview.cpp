@@ -1,6 +1,7 @@
 #include "moleculeinfoview.h"
 #include "ui_moleculeinfoview.h"
 #include <QDebug>
+#include <array>
 
 MoleculeInfoView::MoleculeInfoView(QWidget *parent) :
     QWidget(parent),
@@ -16,13 +17,13 @@ MoleculeInfoView::~MoleculeInfoView()
 {
     delete ui;
 }
-void MoleculeInfoView::fillInfoTable(std::vector<std::array<std::string,2>> info){
+void MoleculeInfoView::fillInfoTable(std::vector<std::pair<std::string,std::string>> info){
 
     ui->tableWidget->setRowCount(info.size());
     for(int i=0;i<info.size();i++){
-        ui->tableWidget->setVerticalHeaderItem(i,new QTableWidgetItem(QString::fromStdString(info[i][0])));
+        ui->tableWidget->setVerticalHeaderItem(i,new QTableWidgetItem(QString::fromStdString(info[i].first)));
                                 // QString::fromStdString( info[0]));
-        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::fromStdString(info[i][1])));
+        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::fromStdString(info[i].second)));
     }
 }
 void MoleculeInfoView::toEditor(){

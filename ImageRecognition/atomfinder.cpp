@@ -4,12 +4,12 @@
 
 using namespace cv;
 
-atomFinder::atomFinder()
+AtomFinder::AtomFinder()
 {
     ocr=new OCR();
 }
 
-std::vector<AtomGraphicItem *> atomFinder::labelAtoms(cv::Mat src, std::vector<std::string> atomsSymbols){
+std::vector<AtomGraphicItem *> AtomFinder::labelAtoms(cv::Mat src, std::vector<std::string> atomsSymbols){
 
     findBlobs( src);
     //qDebug()<<"countours.size"<<countours.size()<<atoms.size();
@@ -24,26 +24,38 @@ std::vector<AtomGraphicItem *> atomFinder::labelAtoms(cv::Mat src, std::vector<s
     return atoms;
 }
 
-void atomFinder::findBlobs(Mat src){
-    Mat img, canny_output;
+void AtomFinder::findBlobs(Mat src){
+    Mat img, canny_output, dst;
     cvtColor( src, img, COLOR_BGR2GRAY );
-    //blur(img,img,Size(10,10));
-    //Canny( img, canny_output, 0, 20, 3 );
+    blur(img,img,Size(10,10));
+    blur(img,img,Size(10,10));
+    blur(img,img,Size(10,10));
+    blur(img,img,Size(10,10));
+
+
+
+    cv::bilateralFilter(img,dst,50,75,5);
+    cv::adaptiveThreshold(dst,dst,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,1,205,0);
+
+
+
+//    Canny( dst, canny_output, 0, 20, 3 );
     bitwise_not(img,img);
 
-    canny_output=canny_output.zeros(img.size(),CV_32F);
+   // canny_output=canny_output.zeros(img.size(),CV_32F);
 
-    vector<Vec4i> hierarchy;
-    findContours(img,countours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE, Point(0,0) );
+    std::vector<Vec4i> hierarchy;
 
+
+    findContours(dst,countours, hierarchy,  cv::RETR_LIST , CHAIN_APPROX_NONE, Point(0,0) );
 }
 
 //Try to find elements from list of countours
-void atomFinder::matchAtomPos(){
+void AtomFinder::matchAtomPos(){
 
     double avrgArea=0;
     int numOfCountours=countours.size();
-
+    qDebug()<<"atom countours"<<countours.size();
     //Calculate avarange area of countours.
     for (int i=0; i<numOfCountours;i++){
         qDebug()<<boundingRect(countours[i]).area()<<"AREA";
@@ -69,7 +81,7 @@ void atomFinder::matchAtomPos(){
             int xDist=abs( rect1.x-rect2.x)-5;
             int yDist=abs(rect1.y-rect2.y)-5;
             if((xDist<rect1.width || xDist<rect2.width) && (yDist<rect1.height||yDist<rect2.height)){
-                vector<Point> count;
+                std::vector<Point> count;
                 hconcat(countours[i],countours[j],count);
                 //qDebug()<< countours[i].size()<<countours[j].size() <<count.size()<<"count"<<i<<j;
                 comb=true;
@@ -84,7 +96,7 @@ void atomFinder::matchAtomPos(){
 }
 
 //Optical character regognition
-std::string atomFinder::labelBlob(cv::vector<Point> points,Mat src){
+std::string AtomFinder::labelBlob(std::vector<Point> points,Mat src){
     Rect bound = boundingRect(points);
     Mat mat(src,bound);
     return ocr->ocr(mat);

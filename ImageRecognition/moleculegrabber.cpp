@@ -10,33 +10,29 @@ MoleculeGrabber::MoleculeGrabber()
 
 
 cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
-    cv::vector<cv::vector <cv::Point> >contours;
+    std::vector<std::vector <cv::Point> >contours;
     cv::Mat threshOut;
-    cv::Mat img,srcBW,im;
+    cv::Mat img,srcBW,im, imGauss,lap;
 
-    //Scale image to fit
-    if(src.rows>1000)
-        cv::resize(src,im,cv::Size(),0.1,0.1);
-    else
+//    //Scale image to fit
+//    if(src.rows>1000)
+//        cv::resize(src,im,cv::Size(),0.1,0.1);
+//    else
         im=src;
 
-    cv::cvtColor( im, srcBW, cv::COLOR_RGB2GRAY);
+    cv::Canny( im, srcBW , 150, 400, 3 );
+    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 3);
+    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 3);
+    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 3);
 
-    //remove noice and gridlines
-    cv::bilateralFilter(srcBW,img,50,75,5);
-    cv::adaptiveThreshold(img,threshOut,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,1,125,0);
+    cv::findContours(srcBW,contours, cv::RETR_LIST ,cv::CHAIN_APPROX_NONE,cv::Point(0,0));
 
-    //dilate to combine fragments
-    cv::Mat kernel =cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25,25));
-    cv::dilate(threshOut,threshOut,kernel);
 
-    //find contours
-    cv::findContours(threshOut,contours, CV_RETR_LIST ,cv::CHAIN_APPROX_NONE,cv::Point(0,0));
-    cv::vector<cv::Rect> boundRects(contours.size());
+    std::vector<cv::Rect> boundRects(contours.size());
     cv::Point imgCenter=cv::Point(im.cols/2,im.rows/2);
     double minDist=INT_MAX;
     int nearInd;
-
+    qDebug()<<"countours"<<contours.size();
     //Find countour that is closest to center
     for(int i=0;i<contours.size();i++){
         boundRects[i]=cv::boundingRect (cv::Mat(contours[i]));
@@ -44,11 +40,12 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
         cv::Point diff=center-imgCenter;
         double dist =sqrt((diff.x*diff.x + diff.y*diff.y));
         if(dist<minDist){
-            //choose only contour that are large enught
-            if((boundRects[i].width*boundRects[i].height > 1000 )){
-            minDist=dist;
-            nearInd=i;
-        }
+            //choose only contour that are large enought
+//            if((boundRects[i].width*boundRects[i].height > 6000 )){
+                minDist=dist;
+                qDebug()<<dist<<i<<"NEAR"<<boundRects[i].width*boundRects[i].height;
+                nearInd=i;
+//            }
         }
     }
 
@@ -59,9 +56,9 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
 //    cv::imshow( "image", mol );
 //    cv::waitKey(0);
 
-    if(src.rows>1000) cv::resize(mol,mol,cv::Size(),2,2);
-    cv::namedWindow( "img", cv::WINDOW_AUTOSIZE );
-    cv::imshow( "img", mol );
+//    if(src.rows>1000) cv::resize(mol,mol,cv::Size(),2,2);
+//    cv::namedWindow( "imgMOL", cv::WINDOW_AUTOSIZE );
+//    cv::imshow( "imgMOL", mol );
 
     return mol;
 }

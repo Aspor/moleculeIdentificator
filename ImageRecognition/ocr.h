@@ -13,7 +13,7 @@ public:
 
 private:
     char character(cv::Mat);
-    cv::vector<cv::Mat> split(cv::Mat);
+    std::vector<cv::Mat> split(cv::Mat);
     int fileNum;
     std::vector<cv::Mat> characters;
     void loadCharacters();

@@ -24,7 +24,7 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
     visitedAtoms.resize(atoms.size(),false);
     cycleID=0;
     dfs(0,bonds,true,-1);
-    canonize(branchMap.find(nullptr)->second,branchMap,branchMap.find(nullptr));
+    //canonize(branchMap.find(nullptr)->second,branchMap,branchMap.find(nullptr));
     string SMILE=generateSMILE  (branchMap.find(nullptr)->second, bonds);
     return SMILE;
 }
@@ -148,14 +148,14 @@ void Identificator::dfs(int atomID,std::vector<std::vector<int> > bonds ,bool ne
 }
 
 void Identificator::canonize(vector<Atom*> skeleton, multimap<Atom*,vector< Atom*> >branchMap,multimap<Atom*,vector<Atom* > >::iterator branchIter){
-    // TODO  cycles
+    //TODO cycles
     bool changed=false;
     for(int i=0;i<skeleton.size();i++){
         std::multimap<Atom*,vector<Atom*> >::iterator branchPoint=branchMap.find(skeleton[i]);
         if(branchPoint!=branchMap.end()){
             if(branchPoint->second.size() > skeleton.size()-i-1){
                 vector<Atom*> tmp = branchPoint->second;
-                //branch point is skeleton[i] and it will stay in skeleton regatless
+                //branch point is skeleton[i] and it will stay in skeleton regaltess
                 vector<Atom*> tmp2(skeleton.begin()+i+1,skeleton.end());
                 branchMap.erase(branchPoint);
                 branchMap.insert(pair<Atom*, vector<Atom* > >(skeleton[i],tmp2 ) );

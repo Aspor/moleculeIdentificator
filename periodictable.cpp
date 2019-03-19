@@ -20,13 +20,11 @@ PeriodicTable::~PeriodicTable()
 }
 QGridLayout* PeriodicTable::generatePeriodicTable(){
     QGridLayout* perTable=new QGridLayout();
-
     //Orbital numbers
     const int s=2;
     const int p=6;
     const int d=10;
     const int f=14;
-
     int period=1;
     int group=0;
     for (int i=0;i<118;i++){
@@ -90,10 +88,7 @@ QGridLayout* PeriodicTable::generatePeriodicTable(){
                 else{
                     group = i-99;
                 }
-
-
             break;
-
         default:
             break;
         }

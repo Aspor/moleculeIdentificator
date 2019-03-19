@@ -12,7 +12,7 @@ EditorView::EditorView(QWidget *parent) :
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    scene->setSceneRect(0,0,5000,5000);
+    scene->setSceneRect(0,0,window()->width(),window()->height());
     connect(ui->buttonAdd,SIGNAL(toggled(bool)),scene,SLOT(setMyModeAdd(bool)) );
     connect(ui->buttonRemove,SIGNAL(toggled(bool)),scene,SLOT(setMyModeRemove(bool)) );
     connect(ui->buttonEdit,SIGNAL(toggled(bool)),scene,SLOT(setMyModeEdit(bool)) );
@@ -29,6 +29,7 @@ EditorView::EditorView(QWidget *parent) :
     ui->buttonRemove->setIcon(QIcon(":/icons/minus.png"));
     ui->buttonEdit->setIcon(QIcon(":/icons/moveArrow.png"));
 
+
 }
 
 EditorView::~EditorView()
@@ -37,8 +38,10 @@ EditorView::~EditorView()
 }
 
 void EditorView::getSMILE(){
-    Identificator ident=Identificator() ;
     std::vector<Atom*> atoms=scene->getAtomVector();
+    if(atoms.size()==0)
+        return;
+    Identificator ident=Identificator() ;
     std::vector< std::vector<int> >bonds=scene->getConnectivityMatrix();
     std::string smile = ident.ind(atoms,bonds);
     ui->lineEditeSMILE->setText(QString::fromStdString(smile) );
