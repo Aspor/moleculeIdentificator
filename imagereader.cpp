@@ -36,37 +36,27 @@ void ImageReader::read(cv::Mat byteImg, QVector<AtomGraphicItem*> *a, QVector<Bo
             atoms->append(newAtoms[j]);
             scene->addItem(newAtoms[j]);
         }
-        //Check if similar bond already exist
-        bool newBond=true;
-//        for(int k=0;k<bonds.size();k++){
-//                AtomGraphicItem** oldAtoms=bonds[k]->getAtoms();
-//                //if there is similiar bond
-//                if(((oldAtoms[0]->pos()-newAtoms[0]->pos()).manhattanLength()<25  && (oldAtoms[1]->pos()-newAtoms[1]->pos()).manhattanLength()<25   )||((oldAtoms[1]->pos()-newAtoms[0]->pos()).manhattanLength()<25  && (oldAtoms[0]->pos()-newAtoms[1]->pos()).manhattanLength()<25))
-//            {
-//                newBond=false;
-//                //bonds[k]->setBondOrder(2);
-//                break;
-//            }int
-//        }
 
         //if there isn't bond between atoms bond is added.
-        if(newBond){
             scene->addBond(newAtoms[0],newAtoms[1]);
             //mergeNearBonds(bonds->last() );
-        }
     }
-    mergeLines();
     std::vector<AtomGraphicItem* > atomicSymbols;
     //Try to find atomic symbols from image
 
-    atomicSymbols = atomFinder.labelAtoms(molImg,std::vector<std::string>());
+    atomicSymbols = atomFinder.labelAtoms(molImg,std::vector<std::string>(),scale);
+    qDebug()<<"ATOMS size "<<atomicSymbols.size();
    // Insert new atoms to position corresponding image
     for(uint i=0;i<atomicSymbols.size();i++){
         scene->addAtom(atomicSymbols[i]);
         //if there is an atom near added atom mergre those
         //mergeNearAtoms(atomicSymbols[i],5);
     }
-    scene->clearOrphanedAtoms();
+    combBonds();
+    for(int j=0;j<atoms->size();j++){
+        atoms->at(j)->moveBy(0.1,0.1);
+    }
+    return;
 
     //Merge overlapping bonds
     mergeLines();
@@ -78,8 +68,7 @@ void ImageReader::read(cv::Mat byteImg, QVector<AtomGraphicItem*> *a, QVector<Bo
         mergeNearAtoms(atoms->at(j),2);
     }
     combBonds();
-    removeAtomsNearBonds();
-    qDebug()<<"REMOVE NEAR ATOMS";
+  //  removeAtomsNearBonds();
 }
 
 
@@ -178,9 +167,11 @@ QPointF* ImageReader::intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b
             maxDist=dist[i];
     }
     //If smallest or longest distance is too long return (-1,-1)
-    if(minDist>=minThresh || maxDist>maxThresh)
+    if(minDist>=minThresh || maxDist>maxThresh){
+        inter->setX(-1);
+        inter->setY(-1);
         return inter;
-
+    }
     //if lines aren't parallel and intercect point is close enought to one of the bonds return intercect point
     if(b1->line().intersect(b2->line(),inter)!=QLineF::NoIntersection){
         if(pointLineDist(b1->line(),*inter)<minDist || pointLineDist(b2->line(),*inter)<minDist )
@@ -252,7 +243,7 @@ std::vector<std::array<double, 4> > ImageReader::mergeLines(std::vector<std::arr
             if( ( l_i.angleTo(l_j)<10 && l_i.angleTo(l_j)>0 )
               || (l_j.angleTo(l_i)<10 && l_j.angleTo(l_i)>0 ) )
             {
-                if(lineDistance(l_i,l_j)<15 )
+                if(lineDistance(l_i,l_j)<10 )
                 {
                     if(l_i.length()>l_j.length()){
                         QLineF tmpLine=combineLines(l_i,l_j);
@@ -353,12 +344,13 @@ QLineF ImageReader::combineLines(QLineF l1,QLineF l2){
     //create new line with maximum length
     QLineF nLine = QLineF(x1,y1,x2,y2);
     //set angle as avarange between lines
-    qreal angle=(l1.angle()+l2.angle())/2.0;
+    qreal angle=(l1.angle()*l1.length() +l2.angle()*l2.length())/(l1.length()+l2.length());
+    qDebug()<<" angle "<<angle<< l1.angle()<< "  " <<l2.angle();
     nLine.setAngle(angle);
     //check direction of new line and reverse it if necessary
-    if( (l1.angleTo(nLine) <340 && l1.angleTo(nLine) > 20) || (l2.angleTo(nLine) <340 && l2.angleTo(nLine) > 20)){
+   if( (l1.angleTo(nLine) < 300 && l1.angleTo(nLine) > 60)  || (l2.angleTo(nLine) <300 && l2.angleTo(nLine) > 60)){
         nLine.setAngle(nLine.angle()+180);
-    }
+   }
     return nLine;
 }
 

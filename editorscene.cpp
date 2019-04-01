@@ -4,10 +4,13 @@
 #include<algorithm>
 #include<array>
 #include<imagereader.h>
+#include<QImageWriter>
 
 EditorScene::EditorScene(): QGraphicsScene()
 {
-    qsrand(QTime().msec());
+    qsrand(QTime::currentTime().msec());
+    srand(QTime::currentTime().msec());
+
     atomicSymbol='C';
     bondOrder=1;
     charge=0;
@@ -400,11 +403,19 @@ void EditorScene::readFromImage(QImage image){// std::string file){
 
     qreal scale = std::min(height()/ image.height(),width()/image.width());
     image=image.convertToFormat(QImage::Format_Grayscale8);
+
+
+    QString out ="cropped"+QString::number(rand())+".jpg";
+
+    QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+
+
     QImage img = image.scaled(int(image.width()*scale),image.height()*scale);
+    img.save(path+"/"+out);
     byteImage = cv::Mat(img.height(), img.width(), CV_8U, img.bits());
     ImageReader imgRead = ImageReader(this);
     imgRead.read(byteImage,&atoms,&bonds);
-    clearOrphanedAtoms();
+//    clearOrphanedAtoms();
 }
 
 AtomGraphicItem* EditorScene::atomAt(QPointF pos){

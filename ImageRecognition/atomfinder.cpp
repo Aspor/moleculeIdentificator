@@ -9,7 +9,7 @@ AtomFinder::AtomFinder()
     ocr=new OCR();
 }
 
-std::vector<AtomGraphicItem *> AtomFinder::labelAtoms(cv::Mat src, std::vector<std::string> atomsSymbols){
+std::vector<AtomGraphicItem *> AtomFinder::labelAtoms(cv::Mat src, std::vector<std::string> atomsSymbols,double scale){
 
     findBlobs( src);
     //qDebug()<<"countours.size"<<countours.size()<<atoms.size();
@@ -19,25 +19,22 @@ std::vector<AtomGraphicItem *> AtomFinder::labelAtoms(cv::Mat src, std::vector<s
         std::string label = labelBlob(countours[i],src);
         //if(label.compare(" ")){
         Rect b = boundingRect( countours[i]);
-        atoms.push_back(new AtomGraphicItem(QPoint(b.x,b.y), label,0,i+100 ));
+        atoms.push_back(new AtomGraphicItem(QPoint(b.x*scale,b.y*scale), label,0,i+100 ));
     }
     return atoms;
 }
 
 void AtomFinder::findBlobs(Mat src){
     Mat img, canny_output, dst;
-    cvtColor( src, img, COLOR_BGR2GRAY );
+//    cvtColor( src, img, COLOR_BGR2GRAY );
+    img=src;
     blur(img,img,Size(10,10));
     blur(img,img,Size(10,10));
     blur(img,img,Size(10,10));
     blur(img,img,Size(10,10));
-
-
 
     cv::bilateralFilter(img,dst,50,75,5);
     cv::adaptiveThreshold(dst,dst,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,1,205,0);
-
-
 
 //    Canny( dst, canny_output, 0, 20, 3 );
     bitwise_not(img,img);
@@ -45,7 +42,6 @@ void AtomFinder::findBlobs(Mat src){
    // canny_output=canny_output.zeros(img.size(),CV_32F);
 
     std::vector<Vec4i> hierarchy;
-
 
     findContours(dst,countours, hierarchy,  cv::RETR_LIST , CHAIN_APPROX_NONE, Point(0,0) );
 }

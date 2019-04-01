@@ -9,7 +9,6 @@ PeriodicTable::PeriodicTable(QWidget *parent) :
     setLayout(generatePeriodicTable());
     connect(buttonTable,SIGNAL(buttonClicked(int)) ,this,SLOT(buttonPressed(int)));
     connect(this,SIGNAL(elementChosen(QString)),this,SLOT(back()));
-    //resize(200,200);
     //show();
 }
 
@@ -20,11 +19,13 @@ PeriodicTable::~PeriodicTable()
 }
 QGridLayout* PeriodicTable::generatePeriodicTable(){
     QGridLayout* perTable=new QGridLayout();
+    perTable->setSpacing(1);
     //Orbital numbers
     const int s=2;
     const int p=6;
     const int d=10;
     const int f=14;
+
     int period=1;
     int group=0;
     for (int i=0;i<118;i++){

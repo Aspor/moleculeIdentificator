@@ -28,7 +28,7 @@ private:
 
     bool mergeNearAtoms(AtomGraphicItem *atom,int dist=20);
     void mergeAtoms(AtomGraphicItem* a,AtomGraphicItem* a2, bool ord=false );
-    QPointF* intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b2,qreal minThresh=20,qreal maxThresh=50);
+    QPointF* intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b2,qreal minThresh=5,qreal maxThresh=20);
     void combBonds(qreal minThresh=20,qreal maxThres=50);
     std::vector<std::array<double, 4> > mergeLines(std::vector<std::array<double, 4> > lines);
     void mergeLines();

@@ -48,7 +48,7 @@ std::string OCR::ocr(Mat atom){
 std::vector<Mat> OCR::split(Mat atom){
     std::vector<Mat> atoms;
     Mat img=atom;
-    cvtColor( atom, img, COLOR_BGR2GRAY );
+    //cvtColor( atom, img, COLOR_BGR2GRAY );
     bitwise_not(img,img);
     blur(img,img,Size(2,2));
 
@@ -81,9 +81,8 @@ char OCR::character(Mat c){
     if(s>1000){
         Mat o;
         resize(c,o,Size(12,10));
-        char nearest;
+        char nearest='C';
         int shortest=-1;
-        cvtColor(o,o,COLOR_BGR2GRAY);
         for(int i=0;i<characters.size();i++){
             int dist=sum(o!=characters[i])[0];
             //qDebug()<<dist<<shortest<<"dist";

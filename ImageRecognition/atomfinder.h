@@ -18,7 +18,7 @@ public:
     void matchAtomPos();
 
     std::string labelBlob(std::vector<cv::Point>,cv::Mat src);
-    std::vector< AtomGraphicItem*> labelAtoms(cv::Mat src, std::vector<std::string> atoms);
+    std::vector< AtomGraphicItem*> labelAtoms(cv::Mat src, std::vector<std::string> atoms,double scale);
 
 private:
     std::vector<std::vector< cv::Point> > countours;

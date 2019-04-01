@@ -37,7 +37,7 @@ Item {
         imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceFlash
         deviceId: QtMultimedia.availableCameras[0].deviceId
         exposure {
-            exposureCompensation: 2
+            exposureCompensation: 1
             exposureMode: Camera.ExposureAuto
         }
         focus.focusMode: CameraFocus.FocusAuto

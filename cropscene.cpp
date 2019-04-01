@@ -15,7 +15,6 @@ void CropScene::mousePressEvent(QGraphicsSceneMouseEvent *event){
     selection.setBottomRight(start);
     selectionRect->setRect(selection);
     addItem(selectionRect);
-
     mousePressed=true;
 }
 
