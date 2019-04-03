@@ -32,10 +32,12 @@ private slots:
     void fromSMILE();
     void elements();
     void camera();
-
+    void zoomScene(int);
+    void resetSliderValue();
 private:
     Ui::EditorView *ui;
-
+    const int sliderDefault =15;
+    qreal lastSliderValue = 15;
     EditorScene* scene;
 };
 

@@ -401,7 +401,7 @@ void EditorScene::readFromImage(QImage image){// std::string file){
     if(image.width()==0)
         return;
 
-    qreal scale = std::min(height()/ image.height(),width()/image.width());
+    qreal scale = 1; //std::min(height()/ image.height(),width()/image.width());
     image=image.convertToFormat(QImage::Format_Grayscale8);
 
 

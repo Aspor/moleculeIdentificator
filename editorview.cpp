@@ -25,11 +25,12 @@ EditorView::EditorView(QWidget *parent) :
     connect(ui->buttonImage,SIGNAL(clicked(bool)),scene,SLOT(readFromImage()));
     connect(ui->buttonCamera,SIGNAL(clicked(bool)),this,SLOT(camera()));
 
+    connect(ui->zoomSlider,SIGNAL(sliderMoved(int)),this,SLOT(zoomScene(int)));
+    connect(ui->zoomSlider,SIGNAL(sliderReleased()),this,SLOT(resetSliderValue()));
+
     ui->buttonAdd->setIcon(QIcon(":/icons/plus.png"));
     ui->buttonRemove->setIcon(QIcon(":/icons/minus.png"));
     ui->buttonEdit->setIcon(QIcon(":/icons/moveArrow.png"));
-
-
 }
 
 EditorView::~EditorView()
@@ -73,4 +74,15 @@ void EditorView::setElement(QString element){
         ui->comboBox->setCurrentText(element);
     }
     scene->setElement(element);
+}
+
+void EditorView::zoomScene(int zoom){
+    qreal scale = zoom/lastSliderValue;
+    lastSliderValue = zoom;
+    ui->graphicsView->scale(scale,scale);
+}
+
+void EditorView::resetSliderValue(){
+    lastSliderValue=sliderDefault;
+    ui->zoomSlider->setValue(sliderDefault);
 }

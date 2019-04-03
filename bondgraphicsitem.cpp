@@ -21,7 +21,7 @@ AtomGraphicItem** BondGraphicsItem::getAtoms(){
     return atoms;
 }
 void BondGraphicsItem::updatePos(){
-    setLine(atoms[0]->x()+6,atoms[0]->y()+12,atoms[1]->x()+6,atoms[1]->y()+12);
+    setLine(atoms[0]->x()+24,atoms[0]->y()+50,atoms[1]->x()+24,atoms[1]->y()+50);
     return;
 }
 
@@ -41,9 +41,8 @@ void BondGraphicsItem::nextBondOrder(){
         bondOrder=1;
 }
 QRectF BondGraphicsItem::boundingRect() const{
-    qreal extra = (pen().width() +20 ) / 2.0;
+    qreal extra = (pen().width() +60 ) / 2.0;
     //return QRectF(line().p1(), line().p2());
-
     return QRectF(line().p1(), QSizeF(line().p2().x() - line().p1().x(),
                                       line().p2().y() - line().p1().y()))
         .normalized()
@@ -56,7 +55,7 @@ QPainterPath BondGraphicsItem::shape() const{
     qreal c=cos(angle*3.14/180.0);
     qreal s=sin(angle*3.14/180.0);
     qreal i=4.0;
-    qreal padding=15;
+    qreal padding=25;
 
     QPolygon pol=QPolygon();
     pol.push_back((line().p1()+QPointF(s*i*padding,c*i*padding)).toPoint());
@@ -85,39 +84,69 @@ void BondGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     qreal s=sin(angle*3.14/180.0);
     qreal padding=3;
 
+    qreal lenghtChange=30;
+
     QLineF l= QLineF();
+
+    QPointF p1 = line().p1();
+    QPointF tmpP1;
+    QPointF tmpP2;
+
     switch (bondOrder) {
     case 1:
-        // ::fromPolar(line().length(),angle);
-        l.setP1(line().p1());
-        l.setLength(line().length()-5);
+        l.setP1(p1);
+        l.setLength(line().length()-lenghtChange);
         l.setAngle(angle);
+        tmpP1=l.p1();
+        tmpP2=l.p2();
+        l.setP2(tmpP1);
+        l.setP1(tmpP2);
+
+        l.setLength(l.length()-lenghtChange);
         painter->drawLine(l);
         break;
     case 2:
         for(int i=0;i<4;i+=2){
-           // QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-            l.setP1(line().p1()+QPointF( (1-i)*s*1*padding, (1-i)* c*1)*padding);
-            l.setLength(line().length()-5);
+            l.setP1(p1+QPointF( (1-i)*s*1*padding, (1-i)* c*1)*padding);
+            l.setLength(line().length()-lenghtChange);
             l.setAngle(angle);
+
+            tmpP1=l.p1();
+            tmpP2=l.p2();
+            l.setP2(tmpP1);
+            l.setP1(tmpP2);
+
+            l.setLength(l.length()-lenghtChange);
             painter->drawLine(l);
         }
         break;
     case 3:
         for(int i=0;i<3;i++){
-           // QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-            l.setP1(line().p1()+QPointF( (1-i)*s*2*padding, (1-i)*c*2)*padding);
-            l.setLength(line().length()-5);
+            l.setP1(p1+QPointF( (1-i)*s*2*padding, (1-i)*c*2)*padding);
+            l.setLength(line().length()-lenghtChange);
             l.setAngle(angle);
+
+            tmpP1=l.p1();
+            tmpP2=l.p2();
+            l.setP2(tmpP1);
+            l.setP1(tmpP2);
+
+            l.setLength(l.length()-lenghtChange);
             painter->drawLine(l);
         }
         break;
     case 4:
         for(int i=0;i<8;i+=2){
-          //  QLineF l= QLineF();// ::fromPolar(line().length(),angle);
-            l.setP1(line().p1()+QPointF( (3-i)*s*1*padding, (3-i)*c*1)*padding);
-            l.setLength(line().length()-5);
+            l.setP1(p1+QPointF( (3-i)*s*1*padding, (3-i)*c*1)*padding);
+            l.setLength(line().length()-lenghtChange);
             l.setAngle(angle);
+
+            tmpP1=l.p1();
+            tmpP2=l.p2();
+            l.setP2(tmpP1);
+            l.setP1(tmpP2);
+
+            l.setLength(l.length()-lenghtChange);
             painter->drawLine(l);
         }
         break;

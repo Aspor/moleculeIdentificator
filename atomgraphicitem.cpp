@@ -11,6 +11,7 @@ AtomGraphicItem::AtomGraphicItem(QPointF pos,QString atomicSymbol,int charge, in
     this->id=id;
     updateText();
     setFont(QFont("Times",25));
+
     setPos(mapToScene(pos));
     setZValue(2);
 
