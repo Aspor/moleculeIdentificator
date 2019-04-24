@@ -1,7 +1,6 @@
 #include "periodictable.h"
 #include <qdebug.h>
 
-
 PeriodicTable::PeriodicTable(QWidget *parent) :
     QWidget(parent)
 {

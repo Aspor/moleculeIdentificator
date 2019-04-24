@@ -8,22 +8,23 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->graphicsView,SIGNAL(molInf(QString)),this,SLOT(moleculeInfo(QString)));
+    connect(ui->editorUi,SIGNAL(molInf(QString)),this,SLOT(moleculeInfo(QString)));
     connect(ui->moleculeInfoView,SIGNAL(toEditor(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
-    connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->graphicsView->getScene(),SLOT(setElement(QString)));
-    connect(ui->graphicsView,SIGNAL(elements(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+    connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->editorUi->getScene(),SLOT(setElement(QString)));
+    connect(ui->editorUi,SIGNAL(elements(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
     connect(ui->periodicTable,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
-    connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->graphicsView,SLOT(setElement(QString)));
-    connect(ui->graphicsView,SIGNAL(camera(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
-    connect(ui->graphicsView,SIGNAL(camera(int)),ui->imageCapture,SLOT(start()));
+    connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->editorUi,SLOT(setElement(QString)));
+    connect(ui->editorUi,SIGNAL(camera(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+    connect(ui->editorUi,SIGNAL(camera(int)),ui->imageCapture,SLOT(start()));
     connect(ui->imageCapture,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
-  //  connect(ui->graphicsView,SIGNAL(camera(int)),ui->imageCapture,SLOT(img()));
+  //  connect(ui->editorUi,SIGNAL(camera(int)),ui->imageCapture,SLOT(img()));
     connect(ui->imageCapture,SIGNAL(image(QImage)),ui->imageCropDialog,SLOT(setImage(QImage)));
-    connect(ui->imageCropDialog,SIGNAL(croppedImage(QImage)),ui->graphicsView->getScene(),SLOT(readFromImage(QImage)));
+    connect(ui->imageCropDialog,SIGNAL(croppedImage(QImage)),ui->editorUi->getScene(),SLOT(readFromImage(QImage)));
     connect(ui->imageCropDialog,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
 
     api=new API("http://www.chemspider.com","");
     ui->stackedWidget->setCurrentIndex(0);
+
 }
 
 MainWindow::~MainWindow()

@@ -51,13 +51,13 @@ void AtomFinder::matchAtomPos(){
 
     double avrgArea=0;
     int numOfCountours=countours.size();
-    qDebug()<<"atom countours"<<countours.size();
+//    qDebug()<<"atom countours"<<countours.size();
     //Calculate avarange area of countours.
     for (int i=0; i<numOfCountours;i++){
-        qDebug()<<boundingRect(countours[i]).area()<<"AREA";
+//        qDebug()<<boundingRect(countours[i]).area()<<"AREA";
         avrgArea+=boundingRect(countours[i]).area()/numOfCountours;
     }
-    qDebug()<<avrgArea<<"avrgArea";
+//    qDebug()<<avrgArea<<"avrgArea";
     //Remove countours that are larger than avarange or not square enought
     //Skeleton is among countours and it should be removed.
     for (int i=0; i<countours.size();i++){

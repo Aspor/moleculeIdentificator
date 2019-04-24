@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>480</height>
+    <width>292</width>
+    <height>228</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,8 +26,8 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_6">
+    <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -36,7 +36,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="sizePolicy">
@@ -47,7 +47,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="EditorView" name="graphicsView"/>
+         <widget class="EditorUi" name="editorUi" native="true"/>
         </item>
        </layout>
       </widget>
@@ -73,7 +73,7 @@
       </widget>
       <widget class="QWidget" name="page_3">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -145,11 +145,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>EditorView</class>
-   <extends>QGraphicsView</extends>
-   <header>editorview.h</header>
-  </customwidget>
-  <customwidget>
    <class>MoleculeInfoView</class>
    <extends>QWidget</extends>
    <header location="global">moleculeinfoview.h</header>
@@ -171,6 +166,12 @@
    <class>ImageCropDialog</class>
    <extends>QWidget</extends>
    <header location="global">imagecropdialog.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>EditorUi</class>
+   <extends>QWidget</extends>
+   <header>editorui.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

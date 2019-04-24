@@ -17,7 +17,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     identificator.cpp \
-    editorview.cpp \
     editorscene.cpp \
     atomgraphicitem.cpp \
     atom.cpp \
@@ -33,11 +32,12 @@ SOURCES += main.cpp\
     ImageRecognition/moleculegrabber.cpp \
     imagecropdialog.cpp \
     cropscene.cpp \
-    imagereader.cpp
+    imagereader.cpp \
+    editorui.cpp \
+    editorview.cpp
 
 HEADERS  += mainwindow.h \
     identificator.h \
-    editorview.h \
     editorscene.h \
     atomgraphicitem.h \
     atom.h \
@@ -53,13 +53,15 @@ HEADERS  += mainwindow.h \
     ImageRecognition/moleculegrabber.h \
     imagecropdialog.h \
     cropscene.h \
-    imagereader.h
+    imagereader.h \
+    editorui.h \
+    editorview.h
 
 FORMS    += mainwindow.ui \
-    editorview.ui \
     moleculeinfoview.ui \
     imagecapture.ui \
-    imagecropdialog.ui
+    imagecropdialog.ui \
+    editorui.ui
 
 CONFIG += mobility
 MOBILITY =

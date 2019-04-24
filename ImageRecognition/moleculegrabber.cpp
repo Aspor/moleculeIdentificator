@@ -20,10 +20,12 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
 //    else
         im=src;
 
-    cv::Canny( im, srcBW , 150, 400, 3 );
-    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 3);
-    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 3);
-    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 3);
+    //cv::Canny( im, srcBW , 150, 400, 3 );
+    cv::adaptiveThreshold(im,srcBW,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,cv::THRESH_BINARY_INV,255,33);
+
+    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 13);
+    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 13);
+    cv::dilate(srcBW, srcBW, cv::Mat(), cv::Point(-1,-1), 13);
 
     cv::findContours(srcBW,contours, cv::RETR_LIST ,cv::CHAIN_APPROX_NONE,cv::Point(0,0));
 
@@ -32,7 +34,7 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
     cv::Point imgCenter=cv::Point(im.cols/2,im.rows/2);
     double minDist=INT_MAX;
     int nearInd;
-    qDebug()<<"countours"<<contours.size();
+//    qDebug()<<"countours"<<contours.size();
     //Find countour that is closest to center
     for(int i=0;i<contours.size();i++){
         boundRects[i]=cv::boundingRect (cv::Mat(contours[i]));
@@ -43,12 +45,11 @@ cv::Mat MoleculeGrabber::grabMolecule(cv::Mat src){
             //choose only contour that are large enought
 //            if((boundRects[i].width*boundRects[i].height > 6000 )){
                 minDist=dist;
-                qDebug()<<dist<<i<<"NEAR"<<boundRects[i].width*boundRects[i].height;
+//                qDebug()<<dist<<i<<"NEAR"<<boundRects[i].width*boundRects[i].height;
                 nearInd=i;
 //            }
         }
     }
-
 
     cv::Mat mol(im,boundRects[nearInd] );
 

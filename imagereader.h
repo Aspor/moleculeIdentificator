@@ -30,9 +30,9 @@ private:
     void mergeAtoms(AtomGraphicItem* a,AtomGraphicItem* a2, bool ord=false );
     QPointF* intersectingBonds(BondGraphicsItem* b1,BondGraphicsItem* b2,qreal minThresh=5,qreal maxThresh=20);
     void combBonds(qreal minThresh=20,qreal maxThres=50);
-    std::vector<std::array<double, 4> > mergeLines(std::vector<std::array<double, 4> > lines);
+    std::vector<std::array<double, 4> > mergeLines(std::vector<std::array<double, 4> > lines, qreal dist=10, qreal angle=10);
     void mergeLines();
-    void mergeNearBonds(BondGraphicsItem* bond);
+    void mergeNearBonds(BondGraphicsItem* bond, qreal dist=15, qreal angle=15);
     QLineF combineLines(QLineF l1,QLineF l2);
     qreal lineDistance(QLineF l1, QLineF l2);
     qreal pointLineDist(QLineF v, QPointF p );

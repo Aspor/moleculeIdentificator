@@ -6,6 +6,7 @@
 #include <QtCore>
 #include "atomgraphicitem.h"
 
+
 class BondGraphicsItem : public QGraphicsLineItem
 {
 public:
@@ -36,6 +37,7 @@ protected:
 private:
     AtomGraphicItem* atoms[2];
     int bondOrder;
+
 
 };
 

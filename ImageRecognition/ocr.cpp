@@ -65,7 +65,7 @@ std::vector<Mat> OCR::split(Mat atom){
         Rect rect = boundingRect(contours[i]);
         Mat mat(atom,rect);
         if(sum(mat)[0]>500&&rect.area()<500 && rect.width/rect.height<10 && rect.height/rect.width<10 ) {
-            qDebug()<<rect.area();
+//            qDebug()<<rect.area();
             atoms.push_back(mat);
         }
     }

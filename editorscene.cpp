@@ -429,4 +429,6 @@ void EditorScene::clearOrphanedAtoms(){
         removeAtom(atoms.first());
     }
 }
-
+int EditorScene::getMode(){
+    return myMode;
+}

@@ -1,44 +1,24 @@
 #ifndef EDITORVIEW_H
 #define EDITORVIEW_H
 
-#include <QWidget>
-#include"editorscene.h"
+#include <QGraphicsView>
+#include <QEvent>
+#include <QTouchEvent>
 
 
-namespace Ui {
-class EditorView;
-}
-
-class EditorView : public QWidget
+class editorView : public QGraphicsView
 {
     Q_OBJECT
-
 public:
-    explicit EditorView(QWidget *parent = 0);
-    ~EditorView();
-    EditorScene* getScene();
-
-signals:
-    void molInf(QString);
-    void elements(int );
-    void camera(int);
-
+    editorView(QWidget* parent);
+    bool viewportEvent(QEvent* event);
 public slots:
-    void getSMILE();
-    void setElement(QString);
-
-private slots:
-    void moleculeInfo();
-    void fromSMILE();
-    void elements();
-    void camera();
-    void zoomScene(int);
-    void resetSliderValue();
+    void setModeEdit(bool);
 private:
-    Ui::EditorView *ui;
-    const int sliderDefault =15;
-    qreal lastSliderValue = 15;
-    EditorScene* scene;
+    qreal totalScaleFactor=1;
+    qreal totalDx=0;
+    qreal totalDy=0;
+    bool EditMode=false;
 };
 
 #endif // EDITORVIEW_H

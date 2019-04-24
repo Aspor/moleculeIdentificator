@@ -13,7 +13,6 @@ class EditorScene: public QGraphicsScene
 {
     Q_OBJECT
 public:
-    enum Mode {add,edit,remove};
     EditorScene();
     ~EditorScene();
     QVector<AtomGraphicItem*> getAtoms();
@@ -31,6 +30,8 @@ public:
     void editBond();
     static bool compareAtoms(AtomGraphicItem* a1, AtomGraphicItem* a2);
     void  clearOrphanedAtoms();
+    int getMode();
+    enum Mode {add,edit,remove};
 
 public slots:
     void setMyModeAdd(bool toggled);

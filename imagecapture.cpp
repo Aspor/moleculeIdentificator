@@ -20,7 +20,6 @@ void ImageCapture::initialaizeCamera(){
     camera = qvariant_cast<QCamera*>(camera1->property("mediaObject"));
 
     imgProv=static_cast<QQuickImageProvider*> (imgProvBase);
-    qDebug()<<"img"<<imgProvBase;
     a = new QCameraImageCapture(camera);
    // connect(a,SIGNAL(imageCaptured(int,QImage)),this,SLOT(getImage(int,QImage)));
     connect(qmlUi,SIGNAL(accept(QString)),this,SLOT(getImage(QString)));
@@ -31,24 +30,7 @@ void ImageCapture::initialaizeCamera(){
 
 void ImageCapture::getImage(QString imgUrl)
 {
-    qDebug()<<"GetImage"<<imgUrl;
-
-//    QQuickItem* imageCapture = qmlUi->findChild<QQuickItem*>("imageCapture");
-//    qDebug()<<"IMAGECAPTURE";
-//    QString imgPath= imageCapture->property("capturedImagePath").toString();
-
-//    qDebug()<<"img2"<<imgProv;
-//    qDebug()<<"imagePath"<<imgPath;
-
-//    QSize ss=s.toSize();
-//    QSize ss2=s2.toSize();
-//    QString name =imgUrl.split("/").last();
-//    img = imgProv->requestImage(name,&ss,ss2);
-
     QImage img(imgUrl);
-
-   // img.load(imgUrl);
-    qDebug()<<"GOT IMAGE"<<img<<imgUrl;
     emit image(img);
     camera->stop();
     emit back(4);

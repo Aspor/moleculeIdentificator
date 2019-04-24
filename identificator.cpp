@@ -33,7 +33,6 @@ std::string Identificator::ind(std::vector<Atom *> nAtoms, std::vector<std::vect
 //TODO cycle bondOrder
 std::string Identificator::generateSMILE(vector<Atom*> branch, vector<vector<int> >bonds){
     const string bondSymbols[]={"","","=","#","$"};
-    qDebug()<<"branch"<<branch.size();
     string smile="";
     for (int i=0;i<branch.size();i++){
         smile+=branch[i]->SMILEout();
@@ -121,7 +120,6 @@ void Identificator::dfs(int atomID,std::vector<std::vector<int> > bonds ,bool ne
                         break;
                 }
                 if(!cycleExits){
-                    qDebug()<<"newCyc";
                     cycleMap.emplace(atoms[atomID],cycleID);
                     cycleMap.emplace(atoms[i],cycleID);
                     cycleBonds.emplace(cycleID,bonds[atomID][i]);

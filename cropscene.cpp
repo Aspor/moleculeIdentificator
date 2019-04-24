@@ -10,7 +10,6 @@ CropScene::CropScene(): QGraphicsScene()
 
 void CropScene::mousePressEvent(QGraphicsSceneMouseEvent *event){
     start = event->scenePos();
-    qDebug()<<"MOUSEPRESS"<<start;
     selection.setTopLeft(start);
     selection.setBottomRight(start);
     selectionRect->setRect(selection);
@@ -33,7 +32,6 @@ void CropScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
 void CropScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
 
     end = event->scenePos();
-    qDebug()<<"MOUSERELEASE"<<end;
     qreal x1 = start.x();
     qreal y1 = start.y();
     qreal x2 = end.x();
@@ -52,12 +50,10 @@ void CropScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
 void CropScene::setImage(QImage img){
 
     image= img;
-    qDebug()<<"SETimage"<<image;
     addPixmap(QPixmap::fromImage(image));
     selectionRect = new QGraphicsRectItem(0,0,0,0);
 }
 QImage CropScene::getImage(){
-    qDebug()<<"GET IMAGE"<<image;
     return image.copy(selection.toRect());
 
 }
