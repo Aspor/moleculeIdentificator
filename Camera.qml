@@ -84,7 +84,7 @@ Item {
     Button {
         id: cancelButton
         x: 186
-        y: 1350
+        y: 0
         height: 75
         width:  parent.width/5
         text: "Cancel"
@@ -129,7 +129,7 @@ Item {
     }
     Button {
         id: focusButton
-        y: 1366
+        y: 0
         height: 75
         width:  parent.width/5
         text: qsTr("Focus")

@@ -5,7 +5,8 @@
 
 ImageCapture::ImageCapture(QWidget *parent) : QWidget(parent), ui(new Ui::imageCapture)
 {
-    initialized=false;
+    initialaizeCamera();
+    initialized=true;
 }
 void ImageCapture::initialaizeCamera(){
     qmlCamera = new QQuickWidget;
@@ -40,6 +41,7 @@ void ImageCapture::getImage(QString imgUrl)
 
 void ImageCapture::start(){
     initialized? camera->start():initialaizeCamera();
+    show();
 }
 void ImageCapture::cancel(){
     camera->stop();

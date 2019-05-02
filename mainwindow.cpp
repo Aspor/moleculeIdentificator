@@ -12,6 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->moleculeInfoView,SIGNAL(toEditor(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
     connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->editorUi->getScene(),SLOT(setElement(QString)));
     connect(ui->editorUi,SIGNAL(elements(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
+
+    connect(ui->editorUi,SIGNAL(elements(int)),ui->periodicTable,SLOT(update()));
+
     connect(ui->periodicTable,SIGNAL(back(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
     connect(ui->periodicTable,SIGNAL(elementChosen(QString)),ui->editorUi,SLOT(setElement(QString)));
     connect(ui->editorUi,SIGNAL(camera(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
@@ -24,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     api=new API("http://www.chemspider.com","");
     ui->stackedWidget->setCurrentIndex(0);
-
 }
 
 MainWindow::~MainWindow()
@@ -38,3 +40,4 @@ void MainWindow::moleculeInfo(QString SMILE){
     ui->stackedWidget->setCurrentIndex(1);
     delete molecule;
 }
+

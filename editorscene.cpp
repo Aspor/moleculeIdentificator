@@ -404,11 +404,9 @@ void EditorScene::readFromImage(QImage image){// std::string file){
     qreal scale = 1; //std::min(height()/ image.height(),width()/image.width());
     image=image.convertToFormat(QImage::Format_Grayscale8);
 
-
-    QString out ="cropped"+QString::number(rand())+".jpg";
+    QString out ="cropped"+QString::number(QTime::currentTime().msec())+".jpg";
 
     QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-
 
     QImage img = image.scaled(int(image.width()*scale),image.height()*scale);
     img.save(path+"/"+out);

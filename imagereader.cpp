@@ -19,7 +19,7 @@ void ImageReader::read(cv::Mat byteImg, QVector<AtomGraphicItem*> *a, QVector<Bo
     MoleculeGrabber molGrab = MoleculeGrabber();
 
     //cv::Mat molImg = molGrab.grabMolecule(byteImg);
-    cv::Mat molImg = molGrab.grabMolecule(byteImg);
+    cv::Mat molImg = byteImg;
 
     std::vector<std::array<double, 4> >newBonds;
     AtomGraphicItem* newAtoms[2];
@@ -29,7 +29,7 @@ void ImageReader::read(cv::Mat byteImg, QVector<AtomGraphicItem*> *a, QVector<Bo
 
     int id = 0;
     newBonds = bondDetector.detectEdges(molImg);
-    newBonds = mergeLines(newBonds);
+    newBonds = mergeLines(newBonds,25,15);
     for (uint i=0;i<newBonds.size();i++){
         newAtoms[0]= new AtomGraphicItem(QPointF(newBonds[i][0]*scale,newBonds[i][1]*scale),std::string("C") ,0,id);
         newAtoms[1]= new AtomGraphicItem(QPointF(newBonds[i][2]*scale,newBonds[i][3]*scale),std::string("C"),0,id+1);
@@ -43,6 +43,7 @@ void ImageReader::read(cv::Mat byteImg, QVector<AtomGraphicItem*> *a, QVector<Bo
 
         mergeNearBonds(bonds->last() );
     }
+    combBonds();
     return;
 
     std::vector<AtomGraphicItem* > atomicSymbols;
@@ -55,7 +56,6 @@ void ImageReader::read(cv::Mat byteImg, QVector<AtomGraphicItem*> *a, QVector<Bo
         //if there is an atom near added atom mergre those
         //mergeNearAtoms(atomicSymbols[i],5);
     }
-    combBonds();
     for(int j=0;j<atoms->size();j++){
         atoms->at(j)->moveBy(0.1,0.1);
     }

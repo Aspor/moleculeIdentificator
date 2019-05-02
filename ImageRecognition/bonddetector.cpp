@@ -14,7 +14,7 @@ std::vector<std::array<double,4> > BondDetector::detectEdges(cv::Mat src )
 
     cv::adaptiveThreshold(im,dst,255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,cv::THRESH_BINARY_INV,255,33);
 
-    cv::HoughLinesP( dst, lines, 1, CV_PI/180, 80, 100,5 );
+    cv::HoughLinesP( dst, lines, 1, CV_PI/180, 25, 100,5 );
 
     std::vector<std::array<double,4> > bonds;
     for( size_t i = 0; i < lines.size(); i++ )

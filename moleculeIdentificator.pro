@@ -6,7 +6,7 @@
 
 QT       += core gui
 QT       += network
-QT       += quick qml multimedia multimediawidgets quickwidgets
+QT       += quick qml multimedia multimediawidgets quickwidgets androidextras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     cropscene.cpp \
     imagereader.cpp \
     editorui.cpp \
-    editorview.cpp
+    editorview.cpp \
+    androidhelper.cpp
 
 HEADERS  += mainwindow.h \
     identificator.h \
@@ -55,7 +56,8 @@ HEADERS  += mainwindow.h \
     cropscene.h \
     imagereader.h \
     editorui.h \
-    editorview.h
+    editorview.h \
+    androidhelper.h
 
 FORMS    += mainwindow.ui \
     moleculeinfoview.ui \

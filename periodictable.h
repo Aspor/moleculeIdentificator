@@ -18,7 +18,7 @@ class PeriodicTable : public QWidget
     Q_OBJECT
 
 public:
-    explicit PeriodicTable(QWidget *parent = 0);
+    explicit PeriodicTable(QWidget *parent = nullptr);
     ~PeriodicTable();
 
 public slots:

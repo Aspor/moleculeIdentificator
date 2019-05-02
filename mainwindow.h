@@ -22,6 +22,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     API* api;
+private slots:
 };
 
 #endif // MAINWINDOW_H

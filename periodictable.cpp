@@ -5,20 +5,20 @@ PeriodicTable::PeriodicTable(QWidget *parent) :
     QWidget(parent)
 {
     buttonTable=new QButtonGroup();
-    setLayout(generatePeriodicTable());
+    generatePeriodicTable();
     connect(buttonTable,SIGNAL(buttonClicked(int)) ,this,SLOT(buttonPressed(int)));
     connect(this,SIGNAL(elementChosen(QString)),this,SLOT(back()));
-    //show();
 }
+
 
 PeriodicTable::~PeriodicTable()
 {
-    //delete ui;
     delete buttonTable;
 }
 QGridLayout* PeriodicTable::generatePeriodicTable(){
-    QGridLayout* perTable=new QGridLayout();
-    perTable->setSpacing(1);
+    QGridLayout* perTable=new QGridLayout(this);
+    setLayout(perTable);
+    perTable->setSpacing(0);
     //Orbital numbers
     const int s=2;
     const int p=6;
@@ -94,11 +94,20 @@ QGridLayout* PeriodicTable::generatePeriodicTable(){
         }
         //period++;
     }
+    perTable->setSizeConstraint(QLayout::SetNoConstraint);
+    for (int i=0;i<perTable->columnCount();i++) {
+        perTable->setColumnMinimumWidth(i,1);
+    }
+    for (int i=0;i<perTable->rowCount();i++) {
+        perTable->setRowMinimumHeight(i,1);
+    }
+
+    qDebug()<<"PERTABLE"<<perTable->sizeHint();
+
     return perTable;
 }
 QPushButton* PeriodicTable::elementButton(int i){
     QPushButton* but=new QPushButton(elements[i]);// QString().number(i));
-    but->resize(5,5);
     buttonTable->addButton(but,i);
     return but;
 }
